@@ -1,0 +1,17 @@
+\textbf{5.} \label{NewToyYoda}
+Continuation from Problem~\ref{SquishyBear}.
+The distribution of English word length, $k$, is a shifted Poisson random variable. At the end of each word, we will add a space to separate words. There are no spaces allowed in the middle of a word. Under this assumption word length follows the distribution
+$$ w(k)=\frac{e^{-\lambda}\lambda^{k-2} }{(k-2)!} ; k=2,3,4,\cdots.$$
+Assuming there are about a million words in the English language.
+\begin{enumerate}
+\item What is the probability of generating a word in the English language randomly choosing letters
+  \begin{itemize}
+  \item assuming the letters are chosen uniformly.
+  \item assuming the letters are chosen according to $p(x)$.\footnote{
+      See Problem~\ref{SquishyBear}.
+    }
+  \end{itemize}
+\item What is the probability of randomly generating $W$ words in a row under each distribution?
+\item How many times must we randomly sample before getting $W$ words in a row under each distribution?
+\item If a word is $w_k$ characters long (including a space at the end), assume it requires $k \log_2 N$ bits to form. How many bits do we use, on average, to query to the point we have $W$ words in a row?
+\end{enumerate}
