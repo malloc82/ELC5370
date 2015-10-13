@@ -1,21 +1,31 @@
+\documentclass{assignment}
+\begin{document}
+
+\title{5370 Midterm}
+
+
 \textbf{3.}
 \label{SquishyBear}
 The average word in English is $\lambda =5.1$ letters.
-    \begin{enumerate}
-       \item  If letters are drawn randomly from an $N=27$ character alphabet (A through Z and a space),\footnote{
-                            We are not considering punctuation, capitalization or numbers.
-                            }
-       then when is a thick novel with $W$ words typical? Explain your reasoning.
-       \item Here is a web page of 40,000 sampled words
-                        \begin{center}
-                        \verb"http://www.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html"
-                        \end{center}
-             \begin{enumerate}
-                     \item Complete the {\bf Count} column in table by including the {\em space}. Call the resulting empirical distribution $q(x)$ where $x=0,1,2,\cdots$ corresponds to (space, e, t, a, o, $\cdots$).
-                     \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding to this augmented table and
-                            $$p(x) = (1-\alpha) \alpha^x $$
-                     \item Compare this to the $\alpha$ that minimizes
-                            $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$
-                     \item What is the average word length in English based on $q(x)$? On $p(x)$?
-             \end{enumerate}
-       \end{enumerate}
+\begin{enumerate}
+\item  If letters are drawn randomly from an $N=27$ character alphabet (A through Z and a space),\footnote{
+    We are not considering punctuation, capitalization or numbers.
+  }
+  then when is a thick novel with $W$ words typical? Explain your reasoning.
+\item Here is a web page of 40,000 sampled words
+  \begin{center}
+    \verb"http://www.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html"
+  \end{center}
+  \begin{enumerate}
+  \item Complete the {\bf Count} column in table by including the {\em space}. Call the resulting empirical distribution $q(x)$ where $x=0,1,2,\cdots$ corresponds to (space, e, t, a, o, $\cdots$).
+  \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding to this augmented table and
+    $$p(x) = (1-\alpha) \alpha^x $$
+  \item Compare this to the $\alpha$ that minimizes
+    $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$
+  \item What is the average word length in English based on $q(x)$? On $p(x)$?
+  \end{enumerate}
+\end{enumerate}
+
+
+\end{document}
+
