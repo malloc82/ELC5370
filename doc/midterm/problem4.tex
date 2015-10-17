@@ -6,57 +6,49 @@
 
 \textbf{4.} Problem 2.10b in the text:\\
 \begin{align*}
+  X & = \begin{cases}
+    X_1 & \text{with probability $\alpha$} \\
+    X_2 & \text{with probability $1-\alpha$}
+  \end{cases} \\
   H(X) & = -\alpha\log\alpha - (1 - \alpha)\log (1- \alpha) + \alpha H(X_1) + (1 - \alpha) H(X_2)
+         \numberthis \label{2.10b_eq}
 \end{align*}
 Maximize over $\alpha$ to show that $2^{H(X)}\leq 2^{H(X_1)} + 2^{H(X_2) }$ and interpret using the notion that $2^{H(X)}$ is the effective alphabet size.\\
 
 \textbf{Solution:} \\
 \begin{align*}
   \df{d}{d\alpha} H(X)
-  & = \df{d}{d\alpha}\left[ -\alpha\log\alpha - (1 - \alpha)\log (1- \alpha) + \alpha H(X_1) + (1 - \alpha) H(X_2)\right]
-    = 0 \\
+  & = \df{d}{d\alpha}\left[ -\alpha\log\alpha - (1 - \alpha)\log (1- \alpha) + \alpha H(X_1) + (1 - \alpha)
+    H(X_2)\right] = 0 \\
   & = -\left(\log \alpha + \alpha \df{1}{\alpha}\right) - \left( - \log(1-\alpha) - (1-\alpha)\df{1}{1-\alpha}\right)
       + H(X_1) - H(X_2)\\
   & =  -\log\alpha - 1 + \log(1-\alpha) + 1 + H(X_1) - H(X_2) \\
   & =  \log(1-\alpha) - \log\alpha + H(X_1) - H(X_2) \\
-  & = \log\left( \df{1 -\alpha}{\alpha} \right) + H(X_1) - H(X_2) = 0\\
+  & = \log\left( \df{1 -\alpha}{\alpha} \right) + H(X_1) - H(X_2) = 0 \numberthis \label{2.10b_alpha_eq_1}\\
   \Rightarrow \log\left( \df{1 -\alpha}{\alpha} \right) & = H(X_2) - H(X_1) \\
   \df{1 - \alpha}{\alpha} & = 2^{H(X_2) - H(X_1)} \\
   1 & = \alpha 2^{H(X_2) - H(X_1)} + \alpha\\
   1 & = \alpha \left( 2^{H(X_2) - H(X_1)} + 1 \right) \\
-  \alpha & = \df{1}{2^{H(X_2) - H(X_1)} + 1} = \df{1}{K + 1} \\
-  \shortintertext{where:}
-  K & = 2^{H(X_2) - H(X_1)}
-\end{align*}
-So we have:
-\begin{align*}
-  1 - \alpha & = 1 - \df{1}{K + 1} = \df{K}{K + 1} \\
-  H(X) & = - \df{1}{K + 1} \log\left( \df{1}{K + 1} \right) - \df{K}{K + 1}\log\left( \df{K}{K + 1} \right)
-           + \df{1}{K + 1} H(X_1) + \df{K}{K + 1}H(X_2) \\
-             & = \df{\log(K + 1) - K\log\left( \df{K}{K + 1} \right) + H(X_1) + K H(X_2)}{K + 1} \\
-             & = \df{\log(K + 1) - K\log(K) + K\log(K+1) + H(X_1) + K H(X_2)}{K + 1} \\
-             & = \df{H(X_1) +K H(X_2) - K\log(K)}{K+1} + \log(K+1) \\
-  \shortintertext{let $a=H(X_1)$, $b=H(X_2)$}
-  H(X) & = \df{a +2^{b - a} b - 2^{b - a}\log(2^{b - a})}{2^{b - a}+1} + \log(2^{b - a}+1)
-             % & = \df{\log(K + 1) + K\log\left( \df{K + 1}{K} \right) + H(X_1) + K H(X_2)}{K + 1} \\
-             % & = \df{\log(K + 1) + K\log\left( 1 + \df{1}{K} \right) + H(X_1) + KH(X_2)}{K + 1}
+  \alpha & = \df{1}{2^{H(X_2) - H(X_1)} + 1} \numberthis \label{2.10b_alpha_eq_2}
 \end{align*}
 
-% \begin{align*}
-%   \shortintertext{Since:}
-%   \log (a + b) & = \log(a * (1 + b/a)) \\
-%   \shortintertext{We have:}
-%   \log(K + 1) & = \log\left(K * \left(1 + \df{1}{K}\right)\right)\\
-%                & = K + \log\left(1 + \df{1}{K}\right) \\
-% \end{align*}
-% So,
-% \begin{align*}
-%   H(X) & = \df{K + \log\left(1 + \df{1}{K}\right)
-%          + K\log\left( 1 + \df{1}{K}
-%          \right) + H(X_1) + KH(X_2)}{K + 1} \\
-%        & = \df{K + \log\left(1 + \df{1}{K}\right)\left( 1 +  K\right)
-%          + H(X_1) + KH(X_2)}{K + 1} \\
-%        & = \df{K + H(X_1) + KH(X_2)}{K + 1}
-%            + \log\left(\df{K + 1}{K}\right)
-% \end{align*}
+From (\ref{2.10b_eq}), we have:
+\begin{align*}
+  H(X) & = -\alpha\log\alpha - (1 - \alpha)\log (1- \alpha) + \alpha H(X_1) + (1 - \alpha) H(X_2) \\
+       & = -\alpha\log\alpha - \log (1- \alpha) + \alpha \log(1 - \alpha)+ \alpha H(X_1) + (1 - \alpha) H(X_2) \\
+       & = \alpha\log\left( \df{1 - \alpha}{\alpha} \right) - \log(1-\alpha) +\alpha H(X_1) - \alpha H(X_2) + H(X_2)\\
+       & = \alpha\left( \log\left( \df{1 - \alpha}{\alpha} \right) + H(X_1) - H(X_2)\right)
+         - \log(1 - \alpha) + H(X_2) \\
+  \shortintertext{Using (\ref{2.10b_alpha_eq_1}), we get:}
+  H(X) & = -\log(1 - \alpha) + H(X_2) \\
+  \shortintertext{Thus,}
+  2^{H(X)} & = 2^{-\log(1 - \alpha) + H(X_2)} \\
+       & = 2^{-\log(1 - \alpha)}2^{H(X_2)} \\
+       & = (1-\alpha)^{-1}2^{H(X_2)} \\
+\shortintertext{using (\ref{2.10b_alpha_eq_2}), we have:}
+  2^{H(X)} & = \left(1 - \df{1}{2^{H(X_2) - H(X_1)} + 1}\right)^{-1} 2^{H(X_2)} \\
+       & = \df{2^{H(X_2) - H(X_1)} + 1}{2^{H(X_2) - H(X_1)}} 2^{H(X_2)} \\
+       & = 2^{H(X_2)} + 2^{H(X_2) - H(X_2) + H(X_1)} \\
+       & = 2^{H(X_2)} + 2^{H(X_1)} \hspace{1in} \text{for max $\alpha$}
+\end{align*}
 \end{document}
