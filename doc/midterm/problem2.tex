@@ -12,7 +12,72 @@
 where both $p$ and $q$ are fixed probabilities.
 Assume $\Pr [X=0] =\pi $ where $\pi$ is some probability.
 \begin{enumerate}
-\item Calculate the mutual information between $X$ and $Y$.
+\item Calculate the mutual information between $X$ and $Y$.\\
+  \textbf{Solutions:}\\
+  Let
+  \begin{align*}
+    X_0 & = \{X=0\} \\
+    X_1 & = \{X=1\} \\
+    Y_0 & = \{Y=0\} \\
+    Y_1 & = \{Y=1\}
+  \end{align*}
+  \begin{align*}
+    \Pr[Y_1 | X_0] & = \df{\Pr[Y_1, X_0]}{\Pr[X_0]} = q \\
+    \Pr[Y_1, X_0] & = \Pr[X_0]\; q = \pi q \\
+    \Pr[X_0 | Y_1] & = \df{\Pr[Y_1, X_0]}{\Pr[Y_1]} = \df{\pi q}{\Pr[Y_1]}\\
+    \Pr[Y_1] & = \Pr[Y_1 | X_0] + \Pr[Y_1 | X_1] = q + \Pr[Y_1 | X_1]\\
+    \Pr[X_0 | Y_1] & = \df{\pi q}{q + \Pr[Y_1|X_1]} \\
+    \\
+    \Pr[Y_0 | X_1] & = \df{\Pr[Y_0, X_1]}{\Pr[X_1]} = p \\
+    \Pr[Y_0, X_1] & = (1-\pi) p \\
+    \Pr[X_1 | Y_0] & = \df{\Pr[X_1, Y_0]}{\Pr[Y_0]} = \df{(1-\pi)p}{\Pr[Y_0]} \\
+    \Pr[Y = 0] & = \Pr[Y_0 | X_0] + \Pr[Y_0 | X_1] = \Pr[Y_0 | X_0] + p\\
+    \Pr[X_1|Y_0] & = \df{(1-\pi) p }{\Pr[Y_0 | X_0] + p}
+  \end{align*}
+  \begin{align*}
+    I(X;Y) & = \sum_{x,y}p(x, y) \log \df{p(x, y)}{p(x)p(y)} \\
+           & = \Pr[X_0, Y_0] \log \df{\Pr[X_0, Y_0]}{\Pr[X_0]\Pr[Y_0]}
+             + \Pr[X_0, Y_1] \log \df{\Pr[X_0, Y_1]}{\Pr[X_0]\Pr[Y_1]} +\\
+           & \quad \Pr[X_1, Y_0] \log \df{\Pr[X_1, Y_0]}{\Pr[X_1]\Pr[Y_0]}
+             + \Pr[X_1, Y_1] \log \df{\Pr[X_1, Y_1]}{\Pr[X_1]\Pr[Y_1]} \\
+           % & = \Pr[X_0, Y_0] \log \df{\Pr[X_0, Y_0]}{\Pr[X_0]\Pr[Y_0]}
+           %   + \pi q \log \df{q}{\Pr[Y_1]} + \\
+           % & \quad (1-\pi)p \log \df{ p }{\Pr[Y_0]}
+           %   + \Pr[X_1, Y_1] \log \df{\Pr[X_1, Y_1]}{\Pr[X_1]\Pr[Y_1]} \\
+           % & = \Pr[X_0, Y_0] \log \df{\Pr[Y_0 | X_0]}{\Pr[Y_0]}
+           %   + \pi q \log \df{q}{\Pr[Y_1]} + \\
+           % & \quad (1-\pi)p \log \df{ p }{\Pr[Y_0]}
+           %   + \Pr[X_1, Y_1] \log \df{\Pr[Y_1 | X_1]}{\Pr[Y_1]} \\
+           & = \Pr[X_0, Y_0] \log \df{\Pr[Y_0 | X_0]}{\Pr[Y_0]}
+             + \Pr[X_0, Y_1] \log \df{\Pr[Y_1 | X_0]}{\Pr[Y_1]} +\\
+           & \quad \Pr[X_1, Y_0] \log \df{\Pr[Y_0 | X_1]}{\Pr[Y_0]}
+             + \Pr[X_1, Y_1] \log \df{\Pr[Y_1 | X_1]}{\Pr[Y_1]} \\
+           & = \Pr[Y_0, X_0]\log \Pr[Y_0 | X_0] - \Pr[Y_0, X_0] \log \Pr[Y_0] + \\
+           & \quad \Pr[Y_1, X_0] \log \Pr[Y_1 | X_0] - \Pr[Y_1, X_0] \log \Pr[Y_1] + \\
+           & \quad \Pr[Y_0, X_1] \log \Pr[Y_0 | X_1] - \Pr[Y_0, X_1] \log \Pr[Y_0] + \\
+           & \quad \Pr[Y_1, X_1] \log \Pr[Y_1 | X_1] - \Pr[Y_1, X_1] \log \Pr[Y_1] \\
+    % mod
+           & = \Pr[Y_0, X_0]\log \Pr[Y_0 | X_0] - \Pr[Y_0, X_0] \log \Pr[Y_0] + \\
+           & \quad \pi q \log q - \Pr[Y_1, X_0] \log \Pr[Y_1] + \\
+           & \quad (1-\pi) p \log p - \Pr[Y_0, X_1] \log \Pr[Y_0] + \\
+           & \quad \Pr[Y_1, X_1] \log \Pr[Y_1 | X_1] - \Pr[Y_1, X_1] \log \Pr[Y_1]
+    \shortintertext{Still need:}
+    \Pr[X_0, Y_0]           & \qquad \Pr[X_1, Y_1]\\
+    \Pr[Y_0|X_0], \Pr[Y_0]  & \qquad \Pr[Y_1 | X_1], \Pr[Y_1]\\
+    \Pr[X_0|Y_0]            & \qquad \Pr[X_1 | Y_1]
+  \end{align*}
+
+  \begin{align*}
+    I(X ; Y) & = H(X) - H(X | Y) \\
+           & = - \pi \log \pi - (1 - \pi) \log (1 - \pi)  - H(X | Y) \\
+    H(X | Y) & = - \sum_{x, y} p(x, y) \log p(x | y) \\
+             & = - \Pr[X_0, Y_0]\log \Pr[X_0 | Y_0] - \Pr[X_0, Y_1]\log \Pr[X_0 | Y_1] \\
+             & \quad - \Pr[X_1, Y_0]\log \Pr[X_1 | Y_0] - \Pr[X_1, Y_1]\log \Pr[X_1 | Y_1] \\
+             & = - \Pr[X_0, Y_0]\log \Pr[X_0 | Y_0] -  \pi q \log \df{\pi q}{\Pr[Y_1]} \\
+             & \quad  - (1 - \pi) p \log \df{(1-\pi) p}{\Pr[Y_0]} - \Pr[X_1, Y_1]\log \Pr[X_1 | Y_1] \\
+             & = - \Pr[X_0, Y_0]\log (\Pr[Y_0] - p) -  \pi q \log \df{\pi q}{\Pr[Y_1]} \\
+             & \quad  - (1 - \pi) p \log \df{(1-\pi) p}{\Pr[Y_0]} - \Pr[X_1, Y_1]\log (\Pr[Y_1] - q)
+  \end{align*}
 \item What value of $\pi$ maximizes the mutual information?
 \end{enumerate}
 
