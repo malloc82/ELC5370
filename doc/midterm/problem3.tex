@@ -17,7 +17,7 @@ The average word in English is $\lambda =5.1$ letters.
   \begin{align}
     p\left(X^{\ceil{W*(5.1 + 1)}}\right) & \approx 2^{-W*(5.1 + 1)*(5.1 + 1)} \label{problem3_1}
   \end{align}
-  Because when n is very large, $E[l(X^n)] \approx H(X)$, which means $H(X) \approx \lambda$. The number of alphabets
+  Because when n is very large, $E\left[\df{1}{n}l(X^n)\right] \approx H(X)$, which means $H(X) \approx \lambda$. The number of alphabets
   here, including space, should be about $\ceil{W * (\lambda + 1)}$, where ``+1'' is due the space character. Since
   we are adding space at the end of each words, the entropy for words with space should be $\lambda + 1$. So we have
   (\ref{problem3_1}), satisfying which makes the sequence at least weakly typical.
@@ -35,38 +35,71 @@ The average word in English is $\lambda =5.1$ letters.
 
   \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding
     to this augmented table and
-    $$p(x) = (1-\alpha) \alpha^x $$ \\
+    \begin{align}
+      p(x) = (1-\alpha) \alpha^x \label{eq:p3b_p(x)}
+    \end{align}
+    $$ $$ \\
     \textbf{Solutions:}\\
     \begin{align*}
       q(x) & = \df{\lambda}{x!}e^{-\lambda} = \df{\lambda}{x! e^{\lambda}} \\
-      p(x) & = (1-\alpha) \alpha^x \\
-      D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
-           & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
-      \shortintertext{for $x=0$:}
-      \df{d}{d\alpha}\left((1-\alpha) \log\df{e^{\lambda}(1 - \alpha)}{\lambda}\right)
-           & = -\log\df{e^{\lambda}(1 - \alpha)}{\lambda}
-             - \df{e^{\lambda}(1 - \alpha)}{\lambda} \df{\lambda}{e^{\lambda}(1 - \alpha)} \\
-           & = -\log\df{e^{\lambda}(1 - \alpha)}{\lambda} - 1 \\
-     \end{align*}
-     \begin{align*}
-      \shortintertext{for $x = 1, 2, \dots, 26$, let:}
-      T & = (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
-           & = \alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} -
-             \alpha^{x+1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
-      \df{d}{d\alpha} T
-           & = xa^{x-1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
-             + a^x \left( \df{x!e^{\lambda}}{\lambda} \right)
-             \df{(-a^x + x(1 - \alpha)\alpha^{x-1})\lambda}{x!e^{\lambda}(1-\alpha) \alpha^x} \\
-           & \quad - (x+1)\alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
-             - a^{x+1} \left( \df{x!e^{\lambda}}{\lambda} \right)
-             \df{(-a^x + x(1 - \alpha)\alpha^{x-1})\lambda}{x!e^{\lambda}(1-\alpha) \alpha^x} \\
-           & = xa^{x-1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
-             + \df{-a^x + x \alpha^{x-1} - x\alpha^x}{(1-\alpha)} \\
-           & \quad - (x+1)\alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
-             - \df{-a^{x+1} + x(1 - \alpha)\alpha^{x}}{1-\alpha} \\
-           & = (x a^{x-1} - (x+1) \alpha^x)\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
-             + \df{-a^x + x \alpha^{x-1} - x\alpha^x + a^{x+1} - x(1 - \alpha)\alpha^{x}}{1-\alpha}
+      p(x) & = (1-\alpha) \alpha^x
     \end{align*}
+    \begin{align*}
+      D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
+              & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+              & = \sum_{x=0}^{26} \left[(1-\alpha) \alpha^x\log \df{x!e^{\lambda}}{\lambda}
+                + (1-\alpha) \alpha^x\log (1-\alpha) \alpha^x\right]
+    \end{align*}
+    Since this is a function contains an odd degree of polynomial function, $\left.a^{x+1}\right|_{x=26}$, this function
+    has no global minimum or global maximum. So we have to use (\ref{eq:p3b_p(x)}) as our true distribution.
+
+    % \begin{align*}
+    %   D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
+    %        & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+    %   \shortintertext{for $x=0$:}
+    %   \df{d}{d\alpha}\left((1-\alpha) \log\df{e^{\lambda}(1 - \alpha)}{\lambda}\right)
+    %           & = -\log\df{e^{\lambda}(1 - \alpha)}{\lambda}
+    %             - \df{e^{\lambda}(1 - \alpha)}{\lambda} \df{\lambda}{e^{\lambda}(1 - \alpha)} \\
+    %           & = -\log\df{e^{\lambda}(1 - \alpha)}{\lambda} - 1 \\
+    %  \end{align*}
+    %  \begin{align*}
+    %   \shortintertext{for $x = 1, 2, \dots, 26$, let:}
+    %   T & = (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+    %        & = \alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} -
+    %          \alpha^{x+1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+    %   \df{d}{d\alpha} T
+    %        & = xa^{x-1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+    %          + a^x \left( \df{x!e^{\lambda}}{\lambda} \right)
+    %          \df{(-a^x + x(1 - \alpha)\alpha^{x-1})\lambda}{x!e^{\lambda}(1-\alpha) \alpha^x} \\
+    %        & \quad - (x+1)\alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+    %          - a^{x+1} \left( \df{x!e^{\lambda}}{\lambda} \right)
+    %          \df{(-a^x + x(1 - \alpha)\alpha^{x-1})\lambda}{x!e^{\lambda}(1-\alpha) \alpha^x} \\
+    %        & = xa^{x-1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+    %          + \df{-a^x + x \alpha^{x-1} - x\alpha^x}{(1-\alpha)} \\
+    %        & \quad - (x+1)\alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+    %          - \df{-a^{x+1} + x(1 - \alpha)\alpha^{x}}{1-\alpha} \\
+    %        & = (x a^{x-1} - (x+1) \alpha^x)\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+    %          + \df{-a^x + x \alpha^{x-1} - x\alpha^x + a^{x+1} - x(1 - \alpha)\alpha^{x}}{1-\alpha}
+    % \end{align*}
+
+    \begin{align*}
+      D(q || p) & = \sum_x q(x) \log \df{q(x)}{p(x)} \numberthis \label{eq:p3b_KLD}\\
+                & = \sum_x \df{\lambda}{x!e^{\lambda}}\log \df{\lambda}{x!e^{\lambda} (1-\alpha)\alpha^x} \\
+                & = \sum_x \df{\lambda}{x!e^{\lambda}}(\log \lambda - \log (x! e^{\lambda}(1 - \alpha) \alpha^x)) \\
+                & = \df{27\lambda}{x!e^{\lambda}} - \sum_{x=0}^{26} \log (x! e^{\lambda}(1 - \alpha) \alpha^x)
+    \end{align*}
+    Since log is a concave function and this particular one is a inverted log function, if there is a point where
+    derivative is 0, it must be a global minimum.
+    \begin{align*}
+      \df{d}{d\alpha} D(q || p) & = - \sum_{x=0}^{26} \df{x x!e^{\lambda}a^{x-1} - (x+1)!e^{\lambda}a^x}
+                                                        {x!e^{\lambda}(1-\alpha)\alpha^x} \\
+                                & = - \sum_{x=0}^{26} \df{x a^{-1} - (x+1)}{1-\alpha} \\
+                                & = \df{\sum_{x=0}^{26}[x - \alpha(x + 1)]}{\alpha^2 - \alpha} = 0 \\
+      \sum_{x=0}^{26}[x - \alpha(x + 1)] & = 0 \\
+      \alpha\sum_{x=0}^{26}(x + 1) & = \sum_{x=0}^{26} x \\
+      \alpha & = \df{\sum_{x=0}^{26} x}{\sum_{x=0}^{26}(x + 1)} = \df{13}{14}
+    \end{align*}
+    So, when $\alpha = \frac{13}{14}$, (\ref{eq:p3b_KLD}) has the smallest value.
 
   \item Compare this to the $\alpha$ that minimizes
     $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$ \\
