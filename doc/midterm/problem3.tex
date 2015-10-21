@@ -33,9 +33,40 @@ The average word in English is $\lambda =5.1$ letters.
     Space should be 40,000, above E, i.e. the first entry on the table.
     The distribution shown in the page is very close to Poisson distribution.
 
-  \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding to this augmented table and
+  \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding
+    to this augmented table and
     $$p(x) = (1-\alpha) \alpha^x $$ \\
     \textbf{Solutions:}\\
+    \begin{align*}
+      q(x) & = \df{\lambda}{x!}e^{-\lambda} = \df{\lambda}{x! e^{\lambda}} \\
+      p(x) & = (1-\alpha) \alpha^x \\
+      D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
+           & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+      \shortintertext{for $x=0$:}
+      \df{d}{d\alpha}\left((1-\alpha) \log\df{e^{\lambda}(1 - \alpha)}{\lambda}\right)
+           & = -\log\df{e^{\lambda}(1 - \alpha)}{\lambda}
+             - \df{e^{\lambda}(1 - \alpha)}{\lambda} \df{\lambda}{e^{\lambda}(1 - \alpha)} \\
+           & = -\log\df{e^{\lambda}(1 - \alpha)}{\lambda} - 1 \\
+     \end{align*}
+     \begin{align*}
+      \shortintertext{for $x = 1, 2, \dots, 26$, let:}
+      T & = (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+           & = \alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} -
+             \alpha^{x+1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
+      \df{d}{d\alpha} T
+           & = xa^{x-1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+             + a^x \left( \df{x!e^{\lambda}}{\lambda} \right)
+             \df{(-a^x + x(1 - \alpha)\alpha^{x-1})\lambda}{x!e^{\lambda}(1-\alpha) \alpha^x} \\
+           & \quad - (x+1)\alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+             - a^{x+1} \left( \df{x!e^{\lambda}}{\lambda} \right)
+             \df{(-a^x + x(1 - \alpha)\alpha^{x-1})\lambda}{x!e^{\lambda}(1-\alpha) \alpha^x} \\
+           & = xa^{x-1}\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+             + \df{-a^x + x \alpha^{x-1} - x\alpha^x}{(1-\alpha)} \\
+           & \quad - (x+1)\alpha^x\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+             - \df{-a^{x+1} + x(1 - \alpha)\alpha^{x}}{1-\alpha} \\
+           & = (x a^{x-1} - (x+1) \alpha^x)\log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda}
+             + \df{-a^x + x \alpha^{x-1} - x\alpha^x + a^{x+1} - x(1 - \alpha)\alpha^{x}}{1-\alpha}
+    \end{align*}
 
   \item Compare this to the $\alpha$ that minimizes
     $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$ \\
