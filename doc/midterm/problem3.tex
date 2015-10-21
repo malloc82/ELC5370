@@ -1,8 +1,7 @@
 \documentclass{assignment}
-\begin{document}
-
 \title{5370 Midterm}
 
+\begin{document}
 
 \textbf{3.}
 \label{SquishyBear}
@@ -15,23 +14,37 @@ The average word in English is $\lambda =5.1$ letters.
 
   \textbf{Solution:} \\
   When
-  \begin{align*}
-    p\left(X^{\ceil{W*(5.1 + 1)}}\right) & \approx 2^{-W*(5.1 + 1)*(5.1 + 1)}
-  \end{align*}
+  \begin{align}
+    p\left(X^{\ceil{W*(5.1 + 1)}}\right) & \approx 2^{-W*(5.1 + 1)*(5.1 + 1)} \label{problem3_1}
+  \end{align}
+  Because when n is very large, $E[l(X^n)] \approx H(X)$, which means $H(X) \approx \lambda$. The number of alphabets
+  here, including space, should be about $\ceil{W * (\lambda + 1)}$, where ``+1'' is due the space character. Since
+  we are adding space at the end of each words, the entropy for words with space should be $\lambda + 1$. So we have
+  (\ref{problem3_1}), satisfying which makes the sequence at least weakly typical.
+
 \item Here is a web page of 40,000 sampled words
   \begin{center}
     \verb"http://www.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html"
   \end{center}
   \begin{enumerate}
-  \item Complete the {\bf Count} column in table by including the {\em space}. Call the resulting empirical distribution $q(x)$ where $x=0,1,2,\cdots$ corresponds to (space, e, t, a, o, $\cdots$).
+  \item Complete the {\bf Count} column in table by including the {\em space}. Call the resulting empirical
+    distribution $q(x)$ where $x=0,1,2,\cdots$ corresponds to (space, e, t, a, o, $\cdots$). \\
+    \textbf{Solution:} \\
+    Space should be 40,000, above E, i.e. the first entry on the table.
+    The distribution shown in the page is very close to Poisson distribution.
+
   \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding to this augmented table and
-    $$p(x) = (1-\alpha) \alpha^x $$
+    $$p(x) = (1-\alpha) \alpha^x $$ \\
+    \textbf{Solutions:}\\
+
   \item Compare this to the $\alpha$ that minimizes
-    $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$
+    $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$ \\
+    \textbf{Solution:} \\
+
+
   \item What is the average word length in English based on $q(x)$? On $p(x)$?
   \end{enumerate}
 \end{enumerate}
 
 
 \end{document}
-
