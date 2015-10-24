@@ -41,13 +41,13 @@ The average word in English is $\lambda =5.1$ letters.
     $$ $$ \\
     \textbf{Solutions:}\\
     \begin{align*}
-      q(x) & = \df{\lambda}{x!}e^{-\lambda} = \df{\lambda}{x! e^{\lambda}} \\
+      q(x) & = \df{\lambda^x}{x!}e^{-\lambda} = \df{\lambda^x}{x! e^{\lambda}} \\
       p(x) & = (1-\alpha) \alpha^x
     \end{align*}
     \begin{align*}
       D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
-              & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda} \\
-              & = \sum_{x=0}^{26} \left[(1-\alpha) \alpha^x\log \df{x!e^{\lambda}}{\lambda}
+              & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda^x} \\
+              & = \sum_{x=0}^{26} \left[(1-\alpha) \alpha^x\log \df{x!e^{\lambda}}{\lambda^x}
                 + (1-\alpha) \alpha^x\log (1-\alpha) \alpha^x\right]
     \end{align*}
     Since this is a function contains an odd degree of polynomial function, $\left.a^{x+1}\right|_{x=26}$, this function
@@ -104,6 +104,14 @@ The average word in English is $\lambda =5.1$ letters.
   \item Compare this to the $\alpha$ that minimizes
     $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$ \\
     \textbf{Solution:} \\
+    Since we only have $0-26$, i.e., 26 alphabets with one space character, the summation would only go up to 26, reset
+    of terms would be all 0
+    \begin{align*}
+      \sum_{x=0}^{26} \left| p(x) -  q(x) \right|^2
+      & = \sum_{x=0}^{26} \left| (1- \alpha) \alpha^x - \df{\lambda}{x!e^{\lambda}}\right|^2 \\
+      & = \sum_{x=0}^{26} \left| \df{(1-\alpha)\alpha^xx!e^\lambda - \lambda}{x!e^\lambda}\right|^2 \\
+      & = \sum_{x=0}^{26} \left| \df{\alpha^xx!e^\lambda - \alpha^{x+1}x!e^\lambda - \lambda}{x!e^\lambda}\right|^2
+    \end{align*}
 
 
   \item What is the average word length in English based on $q(x)$? On $p(x)$?
