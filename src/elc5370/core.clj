@@ -9,7 +9,8 @@
             )
   (:import [mikera.matrixx Matrix]
            [mikera.matrixx.impl StridedMatrix]
-           [mikera.vectorz Vector]))
+           [mikera.vectorz Vector]
+           [java.awt Color]))
 
 (set! *warn-on-reflection* true)
 
@@ -41,6 +42,28 @@
             "J"	  188
             "Z"	  128})
 
-(def y (mapv second (sort-by second > table)))
-(def x (mapv first  (sort-by second > table)))
+(def data (let [v (sort-by second > table)
+                p (mapv second v)
+                s (double (apply + p))]
+            {:letters (mapv first v)
+             :index   (range (count v))
+             :Pr      (mapv #(/ % s) p)}))
+
+(def ch (charts/scatter-plot (data :index) (data :Pr)
+                             :x-label "Letters"
+                             :y-label "Probability"
+                             :series-label "Raw data"
+                             :legend true))
+
+(defn plot-poisson
+  [shift lambda]
+  (let [poisson-data (stats/pdf-poisson (vec (range shift (+ (count (:Pr data)) shift))) :lambda lambda)]
+    (remove-series ch "Poisson Fit")
+    (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label "Poisson Fit")))
+
+(defn plot-exp
+  [shift rate]
+  (let [exp-data (stats/pdf-exp (vec (range shift (+ (count (:Pr data)) shift))) :rate rate)]
+   (remove-series ch "Exp Fit")
+   (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label "Exp Fit")))
 

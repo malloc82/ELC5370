@@ -53,6 +53,20 @@
             (catch UnknownKeyException e
               nil))))))
 
+(defn get-render-by-label
+  ([chart series-label]
+   (let [plot (-> chart .getPlot)]
+     (loop [n (dec (.getDatasetCount plot))]
+       (let [series (try
+                      (-> plot (.getDataset n) (.getSeries series-label))
+                      (catch UnknownKeyException e
+                        nil))]
+         (if series
+           {:renderer (.getRenderer plot n) :index n}
+           (if (= n 0)
+             nil
+             (recur (dec n)))))))))
+
 (defn update-series
   "Identify a series by series-label, then add new data to that series.
    Optionally, old data can be removed.
