@@ -28,6 +28,15 @@
       [x])))
 ;; ========================================================================
 
+(defmacro get-series-idx
+  [dataset label]
+  `(let [c# (.getSeriesCount ~dataset)]
+     (loop [idx# ^Integer (int 0)]
+       (if (< idx# c#)
+         (if (= ~label (.getSeriesKey ~dataset idx#))
+           idx#
+           (recur (unchecked-inc-int idx#)))
+         nil))))
 
 (defn get-series-by-label
   "Return the series with name specified in series-label.
@@ -37,31 +46,39 @@
   ([chart series-label]
    (let [plot (-> chart .getPlot)]
      (loop [n (dec (.getDatasetCount plot))]
-       (let [series (try
-                      (-> plot (.getDataset n) (.getSeries series-label))
-                      (catch UnknownKeyException e
-                        nil))]
-         (if series
-           {:series series :index n}
+       (let [dataset    (.getDataset plot n)
+             series-idx (get-series-idx dataset series-label)
+             ;; series (try
+             ;;          (-> plot (.getDataset n) (.getSeries series-label))
+             ;;          (catch UnknownKeyException e
+             ;;            nil))
+             ]
+         (if series-idx
+           (.getSeries dataset series-idx)
            (if (= n 0)
              nil
              (recur (dec n))))))))
   ([chart series-label index]
    (let [dataset (-> chart .getPlot (.getDataset index))]
      (when dataset
-       (try (.getSeries dataset series-label)
-            (catch UnknownKeyException e
-              nil))))))
+       (.getSeries dataset 0)
+       ;; (try (.getSeries dataset series-label)
+       ;;      (catch UnknownKeyException e
+       ;;        nil))
+       ))))
 
 (defn get-render-by-label
   ([chart series-label]
    (let [plot (-> chart .getPlot)]
      (loop [n (dec (.getDatasetCount plot))]
-       (let [series (try
-                      (-> plot (.getDataset n) (.getSeries series-label))
-                      (catch UnknownKeyException e
-                        nil))]
-         (if series
+       (let [dataset    (.getDataset plot n)
+             series-idx (get-series-idx dataset series-label)
+             ;; series (try
+             ;;          (-> plot (.getDataset n) (.getSeries series-label))
+             ;;          (catch UnknownKeyException e
+             ;;            nil))
+             ]
+         (if series-idx
            {:renderer (.getRenderer plot n) :index n}
            (if (= n 0)
              nil
@@ -121,13 +138,21 @@
      (loop [n     (dec (.getDatasetCount plot))
             count 0]
        (let [dataset (.getDataset plot n)
-             series  (try
-                       (.getSeries dataset series-label)
-                       (catch UnknownKeyException e
-                         nil))]
-         (if series
+             series-idx (let [c (.getSeriesCount dataset)]
+                          (loop [idx ^Integer (int 0)]
+                            (if (< idx c)
+                              (if (= series-label (.getSeriesKey dataset idx))
+                                idx
+                                (recur (unchecked-inc-int idx)))
+                              nil)))
+             ;; series  (try
+             ;;           (.getSeries dataset series-label)
+             ;;           (catch UnknownKeyException e
+             ;;             nil))
+             ]
+         (if series-idx
            (do
-             (.removeSeries dataset series)
+             (.removeSeries dataset series-idx)
              (if (= n 0)
                (inc count)
                (recur (dec n) (inc count))))

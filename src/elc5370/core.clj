@@ -57,13 +57,19 @@
 
 (defn plot-poisson
   [shift lambda]
-  (let [poisson-data (stats/pdf-poisson (vec (range shift (+ (count (:Pr data)) shift))) :lambda lambda)]
-    (remove-series ch "Poisson Fit")
-    (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label "Poisson Fit")))
+  (let [poisson-data (stats/pdf-poisson (vec (range shift (+ (count (:Pr data)) shift))) :lambda lambda)
+        label        "Poisson Fit"]
+    (remove-series ch label)
+    (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label label)))
 
 (defn plot-exp
-  [shift rate]
-  (let [exp-data (stats/pdf-exp (vec (range shift (+ (count (:Pr data)) shift))) :rate rate)]
-   (remove-series ch "Exp Fit")
-   (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label "Exp Fit")))
+  [shift mean & {:keys [color]}]
+  (let [exp-data (stats/pdf-exp (vec (range shift (+ (count (:Pr data)) shift))) :rate (/ 1.0 (double mean)))
+        label    "Exp Fit"]
+    (remove-series ch label)
+    (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label label)
+    (when color
+      (let [renderer (get-render-by-label ch label)]
+        (when-not (nil? renderer)
+          (.setSeriesPaint (:renderer renderer) 0 color))))))
 
