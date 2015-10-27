@@ -47,21 +47,22 @@
    (let [plot (-> chart .getPlot)]
      (loop [n (dec (.getDatasetCount plot))]
        (let [dataset    (.getDataset plot n)
-             series-idx (get-series-idx dataset series-label)
-             ;; series (try
-             ;;          (-> plot (.getDataset n) (.getSeries series-label))
-             ;;          (catch UnknownKeyException e
-             ;;            nil))
+             ;; series-idx ^Integer (get-series-idx dataset series-label)
+             series (try
+                      (-> plot (.getDataset n) (.getSeries series-label))
+                      (catch UnknownKeyException e
+                        nil))
              ]
-         (if series-idx
-           (.getSeries dataset series-idx)
+         (if series
+           series
+           ;; (.getSeries dataset (int series-idx))
            (if (= n 0)
              nil
              (recur (dec n))))))))
   ([chart series-label index]
    (let [dataset (-> chart .getPlot (.getDataset index))]
      (when dataset
-       (.getSeries dataset 0)
+       (.getSeries dataset ^Integer (int 0))
        ;; (try (.getSeries dataset series-label)
        ;;      (catch UnknownKeyException e
        ;;        nil))
@@ -98,7 +99,7 @@
         clean?     (or (:clean opts) false)
         series     (if (>= index 0)
                      (get-series-by-label chart series-label index)
-                     (:series (get-series-by-label chart series-label)))]
+                     (get-series-by-label chart series-label))]
     (if series
       (do
         (when clean? (.clear series))
