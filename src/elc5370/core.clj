@@ -49,11 +49,21 @@
              :index   (range (count v))
              :Pr      (mapv #(/ % s) p)}))
 
-(def ch (charts/scatter-plot (data :index) (data :Pr)
-                             :x-label "Letters"
-                             :y-label "Probability"
-                             :series-label "Raw data"
-                             :legend true))
+(def x (apply concat
+              (map (fn [x i] (repeat (second x) i))
+                   (sort-by second > table)
+                   (range (count table)))))
+
+;; (def ch (charts/scatter-plot (data :index) (data :Pr)
+;;                              :x-label "Letters"
+;;                              :y-label "Probability"
+;;                              :series-label "Raw data"
+;;                              :legend true))
+
+(def ch (charts/histogram x :nbins (count table)
+                          :x-label "Letters" :y-label "Probability"
+                          :series-label "Letter Histogram"
+                          :density true))
 
 (defn plot-poisson
   [shift lambda]
@@ -71,5 +81,6 @@
     (when color
       (let [renderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
-          (.setSeriesPaint (:renderer renderer) 0 color))))))
+          (.setSeriesPaint renderer 0 color))))))
 
+(plot-exp 0 6.5 :color Color/RED)

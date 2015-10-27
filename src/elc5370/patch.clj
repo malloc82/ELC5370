@@ -79,7 +79,7 @@
              ;;            nil))
              ]
          (if series-idx
-           {:renderer (.getRenderer plot n) :index n}
+           (.getRenderer plot n)
            (if (= n 0)
              nil
              (recur (dec n)))))))))
