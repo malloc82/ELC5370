@@ -6,11 +6,13 @@
             [incanter.charts :as charts]
             [incanter.stats  :as stats]
             [clojure.core.matrix :as mat]
+            [clojure.pprint  :refer [pprint]]
             )
   (:import [mikera.matrixx Matrix]
            [mikera.matrixx.impl StridedMatrix]
            [mikera.vectorz Vector]
-           [java.awt Color]
+           [java.awt Color Shape]
+           [java.awt.geom Ellipse2D$Double]
            [org.apache.commons.math3.special Beta]))
 
 (set! *warn-on-reflection* true)
@@ -46,6 +48,7 @@
 (def data (let [v (sort-by second > table)
                 p (mapv second v)
                 s (double (apply + p))]
+            (println "sum = " s)
             {:letters (mapv first v)
              :index   (range (count v))
              :Pr      (mapv #(/ % s) p)}))
@@ -54,41 +57,6 @@
               (map (fn [x i] (repeat (second x) i))
                    (sort-by second > table)
                    (range (count table)))))
-
-;; (def ch (charts/scatter-plot (data :index) (data :Pr)
-;;                              :x-label "Letters"
-;;                              :y-label "Probability"
-;;                              :series-label "Raw data"
-;;                              :legend true))
-
-(def ch (charts/histogram x :nbins (count table)
-                          :x-label "Letters" :y-label "Probability"
-                          :series-label "Letter Histogram"
-                          :legend true :density true))
-
-(defn plot-poisson
-  [shift lambda & {:keys [color]}]
-  (let [poisson-data (stats/pdf-poisson (vec (range shift (+ (count (:Pr data)) shift))) :lambda lambda)
-        label        "Poisson Fit"]
-    (remove-series ch label)
-    (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label label)
-    (when color
-      (let [renderer (get-render-by-label ch label)]
-        (when-not (nil? renderer)
-          (.setSeriesPaint renderer 0 color))))))
-
-(defn plot-exp
-  [shift mean & {:keys [color]}]
-  (let [exp-data (stats/pdf-exp (vec (range shift (+ (count (:Pr data)) shift))) :rate (/ 1.0 (double mean)))
-        label    "Exp Fit"]
-    (remove-series ch label)
-    (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label label)
-    (when color
-      (let [renderer (get-render-by-label ch label)]
-        (when-not (nil? renderer)
-          (.setSeriesPaint renderer 0 color))))))
-
-(plot-exp 0 6.5 :color Color/RED)
 
 (defn comb
   [^Long n ^Long k]
@@ -146,14 +114,55 @@
       (map Bb-fn k)
       (Bb-fn k))))
 
+
+(defn plot-poisson
+  [shift lambda & {:keys [color]}]
+  (let [poisson-data (stats/pdf-poisson (vec (range shift (+ (count (:Pr data)) shift))) :lambda lambda)
+        label        "Poisson Fit"]
+    (remove-series ch label)
+    (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label label)
+    (when color
+      (let [renderer (get-render-by-label ch label)]
+        (when-not (nil? renderer)
+          (.setSeriesPaint renderer 0 color))))))
+
+(defn plot-exp
+  [shift mean & {:keys [color]}]
+  (let [exp-data (stats/pdf-exp (vec (range shift (+ (count (:Pr data)) shift))) :rate (/ 1.0 (double mean)))
+        label    "Exp Fit"]
+    (remove-series ch label)
+    (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label label)
+    (when color
+      (let [renderer (get-render-by-label ch label)]
+        (when-not (nil? renderer)
+          (.setSeriesPaint renderer 0 color))))))
+
 (defn plot-beta-binomial
   [alpha beta & {:keys [color]}]
   (let [b-b-data (beta-binomial (vec (range 27))
                                 :n 27 :alpha alpha :beta beta)
-        label    " Fit"]
+        label    "Beta-Binomail Fit"]
     (remove-series ch label)
     (charts/add-lines ch (vec (range 27)) b-b-data :series-label label)
     (when color
       (let [renderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
           (.setSeriesPaint renderer 0 color))))))
+
+
+;; (def ch (charts/scatter-plot (data :index) (data :Pr)
+;;                              :x-label "Letters"
+;;                              :y-label "Probability"
+;;                              :series-label "Raw data"
+;;                              :legend true))
+
+(def ch (charts/histogram x :nbins (count table)
+                          :x-label "Letters" :y-label "Probability"
+                          :series-label "Letter Histogram"
+                          :legend true :density true))
+(charts/add-points ch (data :index) (data :Pr) :series-label "Raw data")
+(let [renderer (get-render-by-label ch "Raw data")]
+  (.setSeriesShape renderer 0 (Ellipse2D$Double. -3 -3 6 6)))
+
+;; (plot-exp 0 6.5 :color Color/RED)
+(plot-beta-binomial 0.68 2.7 :color Color/BLUE)

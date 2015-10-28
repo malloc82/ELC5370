@@ -30,8 +30,48 @@ The average word in English is $\lambda =5.1$ letters.
   \item Complete the {\bf Count} column in table by including the {\em space}. Call the resulting empirical
     distribution $q(x)$ where $x=0,1,2,\cdots$ corresponds to (space, e, t, a, o, $\cdots$). \\
     \textbf{Solution:} \\
-    Space should be 40,000, above E, i.e. the first entry on the table.
-    The distribution shown in the page is very close to Poisson distribution.
+    Since the sample words is 40000, there should be the same amount of spaces.
+
+    \begin{tabular}[h]{l|l|r|r}
+      Index & Letters & Occurance & Probability\\
+      \hline
+      0     & Space   & 40000 & 0.1799\\
+      1     & E       & 21912 & 0.09857\\
+      2     & T       & 16587 & 0.07461\\
+      3     & A       & 14810 & 0.06662\\
+      4     & O       & 14003 & 0.06300\\
+      5     & I       & 13318 & 0.05991\\
+      6     & N       & 12666 & 0.05698\\
+      7     & S       & 11450 & 0.05151\\
+      8     & R       & 10977 & 0.04938\\
+      9     & H       & 10795 & 0.04856\\
+      10    & D       & 7874  & 0.03542\\
+      11    & L       & 7253  & 0.03263\\
+      12    & U       & 5246  & 0.02360\\
+      13    & C       & 4943  & 0.02224\\
+      14    & M       & 4761  & 0.02142\\
+      15    & F       & 4200  & 0.01889\\
+      16    & Y       & 3853  & 0.01733\\
+      17    & W       & 3819  & 0.01718\\
+      18    & G       & 3693  & 0.01661\\
+      19    & P       & 3316  & 0.01492\\
+      20    & B       & 2715  & 0.01221\\
+      21    & V       & 2019  & 0.009082\\
+      22    & K       & 1257  & 0.005654\\
+      23    & X       & 315   & 0.001417\\
+      24    & Q       & 205   & 0.0009222\\
+      25    & J       & 188   & 0.0008457\\
+      26    & Z       & 128   & 0.0005758
+    \end{tabular} \\
+
+    After experiment, I found that beta-binomial distribution with $n=27, \alpha=0.68, \beta=2.7$ fit the data the best
+    as shown in fig~\ref{fig:beta-binomial-fit}.
+    \begin{figure}[!h]
+      \centering
+      \includegraphics[width=5in]{pics/beta_binomial_fit.eps}
+      \caption{Beta-binomial pmf fitting with $n=27, \alpha=0.68, \beta=2.7$}
+      \label{fig:beta-binomial-fit}
+    \end{figure}
 
   \item Find the value of $\alpha$ that minimizes the Kullback-Liebler distance between the distribution corresponding
     to this augmented table and
