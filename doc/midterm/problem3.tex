@@ -80,6 +80,17 @@ The average word in English is $\lambda =5.1$ letters.
     \end{align}
     $$ $$ \\
     \textbf{Solutions:}\\
+    Beta-binomial distribution pmf:
+    \begin{align*}
+      q(x|n, \alpha, \beta) & = \dbinom{n}{x} \df{B(x+\alpha, n-x+\beta)}{B(\alpha, \beta)} \\
+      p(x) & = (1 - \alpha)\alpha^x
+    \end{align*}
+    Since we are assuming $q(x)$ as our true distribution and trying to make $p(x)$ as close to $q(x)$ as possible,
+    by reducing KLIC, thus Kullback-Liebler distance should be expressed as:
+    \begin{align*}
+      D(p||q) & = \sum_x q(x)\log \df{q(x)}{p(x)}
+    \end{align*}
+
     \begin{align*}
       q(x) & = \df{\lambda^x}{x!}e^{-\lambda} = \df{\lambda^x}{x! e^{\lambda}} \\
       p(x) & = (1-\alpha) \alpha^x
