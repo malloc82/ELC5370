@@ -9,4 +9,5 @@
                  [net.mikera/vectorz-clj "0.36.0"]
                  [clatrix "0.5.0"]
                  [incanter/incanter-charts "1.5.6"]
-                 [incanter/incanter-core   "1.5.6"]])
+                 [incanter/incanter-core   "1.5.6"]]
+  :resource-paths ["lib/commons-math3-3.5.jar"])
