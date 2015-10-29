@@ -102,22 +102,37 @@
                :else (+ (comb-mem (- n 1) (- k 1))
                         (comb-mem (- n 1) k))))))
 
+(defn new-beta-fn
+  [n a b]
+  (memoize (fn [x]
+             (if (< n x)
+               (throw (Exception. (format "Beta: Combination of range, x > n: x = %d, n = %d" x n)))
+               (Math/exp (Beta/logBeta (+ x a) (+ (- n x) b)))))))
+
 (defn beta-binomial
   [k & {:keys [n alpha beta color] :or {n 10 alpha 0.7 beta 2}}]
-  (let [Bb-fn (fn [x]
-                (if (< n x)
-                  nil
-                  (* (comb-cache n x)
-                     (/ (Math/exp (Beta/logBeta (+ x alpha) (+ (- n x) beta)))
-                        (Math/exp (Beta/logBeta alpha beta))))))]
+  (let [Beta-fn (new-beta-fn n alpha beta)
+        B       (Math/exp (Beta/logBeta alpha beta))
+        Bb-fn   (fn [x]
+                  (if (< n x)
+                    (throw (Exception. (format "Beta-binomial: Combination of range, x > n: x = %d, n = %d" x n)))
+                    (* (comb-cache n x)
+                       (/ (Beta-fn x) B))))]
     (if (coll? k)
       (map Bb-fn k)
       (Bb-fn k))))
 
+(defn p-fn
+  [x  & {:keys [alpha] :or {alpha 0.5}}]
+  (let [f (fn [x]
+            (* (- 1 alpha) (Math/pow alpha x)))]
+    (if (coll? x)
+      (map f x)
+      (f x))))
 
 (defn plot-poisson
-  [shift lambda & {:keys [color]}]
-  (let [poisson-data (stats/pdf-poisson (vec (range shift (+ (count (:Pr data)) shift))) :lambda lambda)
+  [lambda & {:keys [color]}]
+  (let [poisson-data (stats/pdf-poisson (vec (range (count (:Pr data)))) :lambda lambda)
         label        "Poisson Fit"]
     (remove-series ch label)
     (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label label)
@@ -127,8 +142,8 @@
           (.setSeriesPaint renderer 0 color))))))
 
 (defn plot-exp
-  [shift mean & {:keys [color]}]
-  (let [exp-data (stats/pdf-exp (vec (range shift (+ (count (:Pr data)) shift))) :rate (/ 1.0 (double mean)))
+  [mean & {:keys [color]}]
+  (let [exp-data (stats/pdf-exp (vec (range (count (:Pr data)))) :rate (/ 1.0 (double mean)))
         label    "Exp Fit"]
     (remove-series ch label)
     (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label label)
@@ -140,10 +155,38 @@
 (defn plot-beta-binomial
   [alpha beta & {:keys [color]}]
   (let [b-b-data (beta-binomial (vec (range 27))
-                                :n 27 :alpha alpha :beta beta)
+                                :n 26 :alpha alpha :beta beta)
         label    "Beta-Binomail Fit"]
     (remove-series ch label)
     (charts/add-lines ch (vec (range 27)) b-b-data :series-label label)
+    (when color
+      (let [renderer (get-render-by-label ch label)]
+        (when-not (nil? renderer)
+          (.setSeriesPaint renderer 0 color))))))
+
+(defn KLIC-min-alpha [n a b]
+  (let [beta-fn (new-beta-fn n a b)
+        num     (loop [i 0
+                       s 0]
+                  ;; (println i)
+                  (if (<= i n)
+                    (recur (inc i) (+ s (* (comb-cache n i) (beta-fn i) i)))
+                    s))
+        den     (loop [i 0
+                       s 0]
+                  (if (<= i n)
+                    (recur (inc i) (+ s (* (comb-cache n i) (beta-fn i) (inc i))))
+                    s))]
+    ;; (println num)
+    ;; (println den)
+    (/ num den)))
+
+(defn plot-p-fn
+  [& {:keys [color alpha] :or {alpha (KLIC-min-alpha 26 0.68 2.7)}}]
+  (let [px (p-fn (vec (range 27)) :alpha alpha)
+        label "p(x) fit"]
+    (remove-series ch label)
+    (charts/add-lines ch (vec (range 27)) px :series-label label)
     (when color
       (let [renderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
@@ -164,5 +207,20 @@
 (let [renderer (get-render-by-label ch "Raw data")]
   (.setSeriesShape renderer 0 (Ellipse2D$Double. -3 -3 6 6)))
 
-;; (plot-exp 0 6.5 :color Color/RED)
+(plot-exp 6.5 :color Color/RED)
 (plot-beta-binomial 0.68 2.7 :color Color/BLUE)
+
+(let [n 26
+      a 0.68
+      b 2.7
+      beta-fn (new-beta-fn n a b)
+      B       (Math/exp (Beta/logBeta a b))
+      s       (loop [i 0
+                     s 0]
+                ;; (println i)
+                (if (<= i n)
+                  (recur (inc i) (+ s (/ (* (comb-cache n i) (beta-fn i)) B)))
+                  s))]
+    ;; (println num)
+    ;; (println den)
+    s)

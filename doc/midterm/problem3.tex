@@ -30,10 +30,10 @@ The average word in English is $\lambda =5.1$ letters.
   \item Complete the {\bf Count} column in table by including the {\em space}. Call the resulting empirical
     distribution $q(x)$ where $x=0,1,2,\cdots$ corresponds to (space, e, t, a, o, $\cdots$). \\
     \textbf{Solution:} \\
-    Since the sample words is 40000, there should be the same amount of spaces.
+    Since sampled words are 40000, there should be the same amount of spaces, one space per word.
 
     \begin{tabular}[h]{l|l|r|r}
-      Index & Letters & Occurance & Probability\\
+      Index & Letters & Count & Probability\\
       \hline
       0     & Space   & 40000 & 0.1799\\
       1     & E       & 21912 & 0.09857\\
@@ -64,12 +64,14 @@ The average word in English is $\lambda =5.1$ letters.
       26    & Z       & 128   & 0.0005758
     \end{tabular} \\
 
-    After experiment, I found that beta-binomial distribution with $n=27, \alpha=0.68, \beta=2.7$ fit the data the best
-    as shown in fig~\ref{fig:beta-binomial-fit}.
+    After experiment, I found that beta-binomial distribution with $n=26, \alpha=0.68, \beta=2.7$ fit the data the best
+    as shown in fig~\ref{fig:beta-binomial-fit}. Exponential distribution also fits well, but not as well as
+    beta-binomial distribution, also exponential distribution is continuous, and beta-binomial is discrete which also
+    make beta-binomial distribution a better fit.
     \begin{figure}[!h]
       \centering
       \includegraphics[width=5in]{pics/beta_binomial_fit.eps}
-      \caption{Beta-binomial pmf fitting with $n=27, \alpha=0.68, \beta=2.7$}
+      \caption{Beta-binomial pmf fitting with $n=26, \alpha=0.68, \beta=2.7$}
       \label{fig:beta-binomial-fit}
     \end{figure}
 
@@ -88,21 +90,48 @@ The average word in English is $\lambda =5.1$ letters.
     Since we are assuming $q(x)$ as our true distribution and trying to make $p(x)$ as close to $q(x)$ as possible,
     by reducing KLIC, thus Kullback-Liebler distance should be expressed as:
     \begin{align*}
-      D(p||q) & = \sum_x q(x)\log \df{q(x)}{p(x)}
+      D(q||p) & = \sum_x q(x)\log \df{q(x)}{p(x)} \\
+      \shortintertext{Let}
+      C_x & = \dbinom{n}{x} \\
+      B_x & = B(x+\alpha, n-x+\beta) \\
+      B   & = B(\alpha, \beta) \\
+      \shortintertext{then we have:}
+      D(q||p) & = \sum_x \dbinom{n}{x} \df{B(x+\alpha, n-x+\beta)}{B(\alpha, \beta)}
+                \log \left(\df{\dbinom{n}{x} \df{B(x+\alpha, n-x+\beta)}{B(\alpha, \beta)}}{(1-\alpha)\alpha^x}\right) \\
+              & = \df{1}{B}\sum_x C_xB_x\log\left( \df{\df{C_x B_x}{B}}{(1-\alpha)\alpha^x} \right) \\
+              & = \df{1}{B}\sum_x \left[C_xB_x\log\left(\df{C_xB_x}{B}\right) - C_xB_x\log ((1-\alpha)\alpha^x)\right] \\
+              & = \df{1}{B}\sum_x C_xB_x\log\left(\df{C_xB_x}{B}\right) - \df{1}{B}\sum_x C_xB_x\log ((1-\alpha)\alpha^x)
+    \end{align*}
+    As we can see, the function of $D(q||p)$ contains a inverted log function with respect to $\alpha$. Since log is a
+    concave function, if there is a critical point exist, it must be a global minima. To find the critical point, we
+    need to set $\df{d}{d\alpha} D(q||p) = 0$
+    \begin{align*}
+      \df{d}{d\alpha} D(q||p)
+      & = \df{d}{d\alpha} \left(\df{1}{B}\sum_x C_xB_x\log\left(\df{C_xB_x}{B}\right)
+                                - \df{1}{B}\sum_x C_xB_x\log ((1-\alpha)\alpha^x)\right) = 0 \\
+      & = - \df{1}{B}\sum_x\df{C_xB_x(x\alpha^{(x-1)}-(x+1)\alpha^{x})}{(1-\alpha)\alpha^x} = 0\\
+      & = - \df{1}{B}\sum_x\df{C_xB_x(x\alpha^{-1}-x-1)}{(1-\alpha)} = 0 \\
+      & = \sum_x C_xB_x(x\alpha^{-1}-x-1) = 0 \\
+      & = \sum_x C_xB_xx - \sum_x C_xB_x \alpha x - \sum_x C_xB_x\alpha = 0 \\
+      \alpha & = \df{\sum_{x=0}^{26} C_xB_xx}{\sum_{x=0}^{26} C_xB_x (x + 1)}
+               = \df{\sum_{x=0}^{26} \dbinom{n}{x}B(x+\alpha, n-x+\beta) x}
+                    {\sum_{x=0}^{26} \dbinom{n}{x}B(x+\alpha, n-x+\beta) (x + 1)} \\
+      \shortintertext{with $n=26, \alpha-0.68, \beta=2.7$}
+      \alpha & \approx 0.8395
     \end{align*}
 
-    \begin{align*}
-      q(x) & = \df{\lambda^x}{x!}e^{-\lambda} = \df{\lambda^x}{x! e^{\lambda}} \\
-      p(x) & = (1-\alpha) \alpha^x
-    \end{align*}
-    \begin{align*}
-      D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
-              & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda^x} \\
-              & = \sum_{x=0}^{26} \left[(1-\alpha) \alpha^x\log \df{x!e^{\lambda}}{\lambda^x}
-                + (1-\alpha) \alpha^x\log (1-\alpha) \alpha^x\right]
-    \end{align*}
-    Since this is a function contains an odd degree of polynomial function, $\left.a^{x+1}\right|_{x=26}$, this function
-    has no global minimum or global maximum. So we have to use (\ref{eq:p3b_p(x)}) as our true distribution.
+    % \begin{align*}
+    %   q(x) & = \df{\lambda^x}{x!}e^{-\lambda} = \df{\lambda^x}{x! e^{\lambda}} \\
+    %   p(x) & = (1-\alpha) \alpha^x
+    % \end{align*}
+    % \begin{align*}
+    %   D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
+    %           & = \sum_{x=0}^{26} (1-\alpha) \alpha^x \log \df{x!e^{\lambda}(1-\alpha) \alpha^x}{\lambda^x} \\
+    %           & = \sum_{x=0}^{26} \left[(1-\alpha) \alpha^x\log \df{x!e^{\lambda}}{\lambda^x}
+    %             + (1-\alpha) \alpha^x\log (1-\alpha) \alpha^x\right]
+    % \end{align*}
+    % Since this is a function contains an odd degree of polynomial function, $\left.a^{x+1}\right|_{x=26}$, this function
+    % has no global minimum or global maximum. So we have to use (\ref{eq:p3b_p(x)}) as our true distribution.
 
     % \begin{align*}
     %   D(p||q) & = \sum_x p(x)\log \df{p(x)}{q(x)}\\
@@ -133,24 +162,24 @@ The average word in English is $\lambda =5.1$ letters.
     %          + \df{-a^x + x \alpha^{x-1} - x\alpha^x + a^{x+1} - x(1 - \alpha)\alpha^{x}}{1-\alpha}
     % \end{align*}
 
-    \begin{align*}
-      D(q || p) & = \sum_x q(x) \log \df{q(x)}{p(x)} \numberthis \label{eq:p3b_KLD}\\
-                & = \sum_x \df{\lambda}{x!e^{\lambda}}\log \df{\lambda}{x!e^{\lambda} (1-\alpha)\alpha^x} \\
-                & = \sum_x \df{\lambda}{x!e^{\lambda}}(\log \lambda - \log (x! e^{\lambda}(1 - \alpha) \alpha^x)) \\
-                & = \df{27\lambda}{x!e^{\lambda}} - \sum_{x=0}^{26} \log (x! e^{\lambda}(1 - \alpha) \alpha^x)
-    \end{align*}
-    Since log is a concave function and this particular one is a inverted log function, if there is a point where
-    derivative is 0, it must be a global minimum.
-    \begin{align*}
-      \df{d}{d\alpha} D(q || p) & = - \sum_{x=0}^{26} \df{x x!e^{\lambda}a^{x-1} - (x+1)!e^{\lambda}a^x}
-                                                        {x!e^{\lambda}(1-\alpha)\alpha^x} \\
-                                & = - \sum_{x=0}^{26} \df{x a^{-1} - (x+1)}{1-\alpha} \\
-                                & = \df{\sum_{x=0}^{26}[x - \alpha(x + 1)]}{\alpha^2 - \alpha} = 0 \\
-      \sum_{x=0}^{26}[x - \alpha(x + 1)] & = 0 \\
-      \alpha\sum_{x=0}^{26}(x + 1) & = \sum_{x=0}^{26} x \\
-      \alpha & = \df{\sum_{x=0}^{26} x}{\sum_{x=0}^{26}(x + 1)} = \df{13}{14}
-    \end{align*}
-    So, when $\alpha = \frac{13}{14}$, (\ref{eq:p3b_KLD}) has the smallest value.
+    % \begin{align*}
+    %   D(q || p) & = \sum_x q(x) \log \df{q(x)}{p(x)} \numberthis \label{eq:p3b_KLD}\\
+    %             & = \sum_x \df{\lambda}{x!e^{\lambda}}\log \df{\lambda}{x!e^{\lambda} (1-\alpha)\alpha^x} \\
+    %             & = \sum_x \df{\lambda}{x!e^{\lambda}}(\log \lambda - \log (x! e^{\lambda}(1 - \alpha) \alpha^x)) \\
+    %             & = \df{27\lambda}{x!e^{\lambda}} - \sum_{x=0}^{26} \log (x! e^{\lambda}(1 - \alpha) \alpha^x)
+    % \end{align*}
+    % Since log is a concave function and this particular one is a inverted log function, if there is a point where
+    % derivative is 0, it must be a global minimum.
+    % \begin{align*}
+    %   \df{d}{d\alpha} D(q || p) & = - \sum_{x=0}^{26} \df{x x!e^{\lambda}a^{x-1} - (x+1)!e^{\lambda}a^x}
+    %                                                     {x!e^{\lambda}(1-\alpha)\alpha^x} \\
+    %                             & = - \sum_{x=0}^{26} \df{x a^{-1} - (x+1)}{1-\alpha} \\
+    %                             & = \df{\sum_{x=0}^{26}[x - \alpha(x + 1)]}{\alpha^2 - \alpha} = 0 \\
+    %   \sum_{x=0}^{26}[x - \alpha(x + 1)] & = 0 \\
+    %   \alpha\sum_{x=0}^{26}(x + 1) & = \sum_{x=0}^{26} x \\
+    %   \alpha & = \df{\sum_{x=0}^{26} x}{\sum_{x=0}^{26}(x + 1)} = \df{13}{14}
+    % \end{align*}
+    % So, when $\alpha = \frac{13}{14}$, (\ref{eq:p3b_KLD}) has the smallest value.
 
   \item Compare this to the $\alpha$ that minimizes
     $$ \sum_{x=0}^\infty \left| p(x) -  q(x) \right|^2 $$ \\
@@ -159,11 +188,20 @@ The average word in English is $\lambda =5.1$ letters.
     of terms would be all 0
     \begin{align*}
       \sum_{x=0}^{26} \left| p(x) -  q(x) \right|^2
-      & = \sum_{x=0}^{26} \left| (1- \alpha) \alpha^x - \df{\lambda}{x!e^{\lambda}}\right|^2 \\
-      & = \sum_{x=0}^{26} \left| \df{(1-\alpha)\alpha^xx!e^\lambda - \lambda}{x!e^\lambda}\right|^2 \\
-      & = \sum_{x=0}^{26} \left| \df{\alpha^xx!e^\lambda - \alpha^{x+1}x!e^\lambda - \lambda}{x!e^\lambda}\right|^2
+      & = \sum_{x=0}^{26} \left| (1- \alpha) \alpha^x - \df{C_xB_x}{B}\right|^2 \\
+      & = \sum_{x=0}^{26} \left| a^x - a^{x+1} - \df{C_xB_x}{B}\right|^2 \\
+      & = \sum_{x=0}^{26} \left(  a^{2x} - a^{2x+1} - \df{C_xB_xa^x}{B} \right. \\
+      & \quad \quad \quad \quad - a^{2x+1} + a^{2x+2} + \df{C_xB_xa^{x+1}}{B} \\
+      & \quad \quad \quad \quad \left. - \df{C_xB_xa^{x}}{B} + \df{C_xB_xa^{x+1}}{B} + \left(\df{C_xB_x}{B}\right)^2
+        \right) \\
+      & = \sum_{x=0}^{26} \left(a^{2x+2} - 2a^{2x+1} + a^{2x} + \df{2C_xB_x}{B}a^{x+1} - \df{2C_xB_x}{B}a^{x} +
+        \left(\df{C_xB_x}{B} \right)^2 \right) \\
+      & = (a - 1)^2\sum_{x=0}^{26} a^{2x}  + \sum_{x=0}^{26} a^{x} \left(\df{2C_xB_x}{B} a - \df{2C_xB_x}{B}\right)
+        + \sum_{x=0}^{26}\left(\df{C_xB_x}{B}\right)^2
     \end{align*}
-
+    \begin{align*}
+      & = (a - 1)^2\sum_{x=0}^{26} 2xa^{2x-1} + \sum_{x=0}^{26} \left(\df{2C_xB_x}{B}(x+1)a^{x} - \df{2C_xB_x}{B}xa^{x-1}\right)
+    \end{align*}
 
   \item What is the average word length in English based on $q(x)$? On $p(x)$?
   \end{enumerate}
