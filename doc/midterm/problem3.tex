@@ -195,9 +195,14 @@ The average word in English is $\lambda =5.1$ letters.
       & \quad \quad \quad \quad \left. - \df{C_xB_x}{B}a^{x} + \df{C_xB_x}{B}a^{x+1} + \left(\df{C_xB_x}{B}\right)^2
         \right) \\
       & = \sum_{x=0}^{26} \left(a^{2x+2} - 2a^{2x+1} + a^{2x} + \df{2C_xB_x}{B}a^{x+1} - \df{2C_xB_x}{B}a^{x} +
-        \left(\df{C_xB_x}{B} \right)^2 \right) \numberthis \label{eq:prob3c:f} \\
-      & = \sum_{x=0}^{26} \left((a - 1)^2 a^{2x}  + \df{2C_xB_x}{B} a^{x+1} - \df{2C_xB_x}{B} a^x
-        + \left(\df{C_xB_x}{B}\right)^2\right)
+        \left(\df{C_xB_x}{B} \right)^2 \right) \numberthis \label{eq:prob3c:f}\\
+      % & = \sum_{x=0}^{26} \left((a - 1)^2 a^{2x}  + \df{2C_xB_x}{B} a^{x+1} - \df{2C_xB_x}{B} a^x
+      %   + \left(\df{C_xB_x}{B}\right)^2\right) \\
+      % & = \sum_{x=0}^{26} a^{2x}(a - 1)^2
+      %   + \sum_{x=0}^{26} \left(  \df{2C_xB_x}{B} a^{x+1} - \df{2C_xB_x}{B} a^x + \left(\df{C_xB_x}{B}\right)^2\right) \\
+      % & = \sum_{x=0}^{26} (a^{2x+2} - 2a^{2x+1} + a^{2x})
+      %   + \sum_{x=0}^{26} \left( 2C_xB_x a^{x+1} - 2C_xB_x a^x + \df{(C_xB_x)^2}{B}\right)
+      %   \numberthis \label{eq:prob3c:f2} \\
     \end{align*}
     Since this is a polynomial with even degree and positive leading coefficient, $a^{2\times 26 + 2} = a^{54}$, the
     opening of the polynomial should be upward and it should have at least one global minimum.
@@ -205,11 +210,12 @@ The average word in English is $\lambda =5.1$ letters.
     The first and second derivative of (\ref{eq:prob3c:f}) are:
     \begin{align*}
       \df{d}{da}\left(\sum_{x=0}^{26} \left| p(x) -  q(x) \right|^2\right)
-      & = \sum_{x=0}^{26} \left( (2x+2)a^{2x+1} - (2x+2)a^{2x} + 2xa^{2x-1} + (x+1)\df{2C_xB_x}{B} a^{x} \right.\\
-      & \quad \quad \quad \quad \left.  - x\df{2C_xB_x}{B} a^{x-1}\right)\\
+      & = \sum_{x=1}^{26} \left( (2x+2)a^{2x+1} - (2x+2)a^{2x} + 2xa^{2x-1} + (x+1)\df{2C_xB_x}{B} a^{x} \right.\\
+      & \quad \quad \quad \quad \left.  - x\df{2C_xB_x}{B} a^{x-1}\right) + 2a -2 + \df{2C_xB_x}{B} \\
       \df{d^2}{da^2}\left(\sum_{x=0}^{26} \left| p(x) -  q(x) \right|^2\right)
-      & = \sum_{x=0}^{26} \left( (2x+2)(2x+1)a^{2x} - (2x+2)2xa^{2x-1} + 2x(2x-1)a^{2x-2} + \right. \\
-      & \quad \quad \quad \quad \left. x(x+1)\df{2C_xB_x}{B} a^{x-1} - x(x-1)\df{2C_xB_x}{B} a^{x-2}\right)
+      & = \sum_{x=2}^{26} \left( (2x+2)(2x+1)a^{2x} - (2x+2)2xa^{2x-1} + 2x(2x-1)a^{2x-2} + \right. \\
+      & \quad \quad \quad \quad \left. x(x+1)\df{2C_xB_x}{B} a^{x-1} - x(x-1)\df{2C_xB_x}{B} a^{x-2}\right) \\
+      & \quad + 12a^2 - 8a + 2 + \df{4C_xB_x}{B} + 2
     \end{align*}
     \begin{align*}
       & = (a - 1)^2\sum_{x=0}^{26} 2xa^{2x-1} + \df{1}{B}\sum_{x=0}^{26} \left(2C_xB_x(x+1)a^{x} - 2C_xB_xxa^{x-1}\right)
