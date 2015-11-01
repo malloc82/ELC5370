@@ -1,6 +1,7 @@
 (ns elc5370.core
   (:use [clojure.core]
         [elc5370.binomial]
+        [elc5370.optimization]
         [elc5370.patch])
   (:require [clojure.java.io :as io]
             [incanter.core   :as incanter]
@@ -161,4 +162,6 @@
     ;; (println den)
     (/ s B))
 
-
+(def beta-binomial2 (new-beta-binomial-fn 26 0.68 2.7))
+(let [x (vec (range  -3 3 0.001)) ]
+  (incanter/view (charts/xy-plot x (map f x) :series-label "beta binomial f plot")))

@@ -5,7 +5,7 @@
            [mikera.matrixx Matrix]
            [org.apache.commons.math3.special Beta]))
 
-(def beta-bino (new-beta-binomial-fn 26 0.68 2.7))
+(def beta-binomial (new-beta-binomialmial-fn 26 0.68 2.7))
 (def tol 0.000001)
 
 (defn newton
@@ -27,7 +27,7 @@
          s ^Double (double 0.0)]
     (if (<= x 26)
       (let [_2x   ^Long   (long (* x 2))
-            CxBxB ^Double (beta-bino x)]
+            CxBxB ^Double (beta-binomial x)]
         (recur (unchecked-inc x)
                (+    s
                      (Math/pow a (+ _2x 2))
@@ -44,7 +44,7 @@
          s ^Double (double 0.0)]
     (if (<= x 26)
       (let [_2x     ^Long   (long (* x 2))
-            _2CxBxB ^Double (double (* 2 (beta-bino x)))]
+            _2CxBxB ^Double (double (* 2 (beta-binomial x)))]
         (recur (unchecked-inc x)
                (+    s
                      (* (+ _2x 2) (Math/pow a (inc _2x)))
@@ -52,7 +52,7 @@
                      (* _2x (Math/pow a (unchecked-dec _2x)))
                      (* (inc x) _2CxBxB (Math/pow a x))
                   (- (* x _2CxBxB (Math/pow a (unchecked-dec x)))))))
-      (+ s (* 2 a) (- 2) (* 2 (beta-bino 0))))))
+      (+ s (* 2 a) (- 2) (* 2 (beta-binomial 0))))))
 
 (defn ddf
   [a]
@@ -60,7 +60,7 @@
          s ^Double (double 0.0)]
     (if (<= x 26)
       (let [_2x     ^Long   (long (* x 2))
-            _2CxBxB ^Double (double (* 2 (beta-bino x)))]
+            _2CxBxB ^Double (double (* 2 (beta-binomial x)))]
         (recur (unchecked-inc x)
                (+    s
                      (* (+ _2x 2) (+ _2x 1) (Math/pow a _2x))
@@ -72,8 +72,6 @@
          (* 12 (Math/pow a 2))
          (- (* 12 a))
          4
-         (* 4 (beta-bino 1))))))
+         (* 4 (beta-binomial 1))))))
 
-;; (defn df
-;;   [x]
-;;   )
+(newton df ddf :x0 1 :iter 10000 :tol tol)
