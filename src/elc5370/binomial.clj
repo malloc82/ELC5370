@@ -28,10 +28,29 @@
 
 (defn new-beta-fn
   [n a b]
-  (memoize (fn [x]
+  (memoize (fn [^Long x]
              (if (< n x)
                (throw (Exception. (format "Beta: Combination of range, x > n: x = %d, n = %d" x n)))
                (Math/exp (Beta/logBeta (+ x a) (+ (- n x) b)))))))
+
+(defn new-beta-binomial-fn
+  [n alpha beta]
+  (let [cache   (atom {})
+        beta-fn (new-beta-fn n alpha beta)
+        B       (Math/exp (Beta/logBeta alpha beta))]
+    (fn ([x]
+        (let [bb-fn (fn [x]
+                      (if (< n x)
+                        (throw
+                         (Exception.
+                          (format "Beta-binomial: Combination values of range: n = %d, x = %d" n x)))
+                        (or (@cache x)
+                            (let [val (* (comb-cache n x)
+                                         (/ (beta-fn x) B))]
+                              (swap! cache assoc x val)
+                              val))))]
+          (if (coll? x) (map bb-fn x) (bb-fn x))))
+      ([] @cache))))
 
 (defn beta-binomial
   [k & {:keys [n alpha beta color] :or {n 10 alpha 0.7 beta 2}}]
@@ -39,7 +58,9 @@
         B       (Math/exp (Beta/logBeta alpha beta))
         Bb-fn   (fn [x]
                   (if (< n x)
-                    (throw (Exception. (format "Beta-binomial: Combination of range, x > n: x = %d, n = %d" x n)))
+                    (throw
+                     (Exception.
+                      (format "Beta-binomial: Combination of range, x > n: x = %d, n = %d" x n)))
                     (* (comb-cache n x)
                        (/ (Beta-fn x) B))))]
     (if (coll? k)
