@@ -1,12 +1,9 @@
 (ns elc5370.optimization
-  (:use clojure.core elc5370.binomial)
-  (:require [clojure.core.matrix :as mat])
-  (:import [mikera.vectorz Vector]
-           [mikera.matrixx Matrix]
-           [org.apache.commons.math3.special Beta]))
+  (:use clojure.core
+        elc5370.binomial)
+  (:import [org.apache.commons.math3.special Beta]))
 
-(def beta-binomial (new-beta-binomialmial-fn 26 0.68 2.7))
-(def tol 0.000001)
+(def beta-binomial (new-beta-binomial-fn 26 0.68 2.7))
 
 (defn newton
   [f df & {:keys [x0 iter tol] :or {x0   (double 0.0)
@@ -74,4 +71,4 @@
          4
          (* 4 (beta-binomial 1))))))
 
-(newton df ddf :x0 1 :iter 10000 :tol tol)
+(newton df ddf :x0 1 :iter 10000 :tol 0.000001)
