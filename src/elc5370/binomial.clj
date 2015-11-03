@@ -33,6 +33,19 @@
                (throw (Exception. (format "Beta: Combination of range, x > n: x = %d, n = %d" x n)))
                (Math/exp (Beta/logBeta (+ x alpha) (+ (- n x) beta)))))))
 
+(def fact-cache
+  (let [cache (atom {})]
+    (fn ! ([n]
+          (cond
+            (< n 0) (throw (Exception. (format "Factorial only accept integer greater than 0: n = %d" n)))
+            (<= n 1) 1
+            :else (or (@cache n)
+                      (let [v (* n (! (dec n)))]
+                        (swap! cache assoc n v)
+                        v))))
+      ([] @cache))))
+
+
 (defn new-beta-binomial-fn
   [n alpha beta]
   (let [cache   (atom {})
