@@ -26,28 +26,38 @@ Assuming there are about a million words in the English language.
   \begin{align*}
     % w(k) & = P(L=k | W) \\
     P(W) & = \sum_k P(W \cap L_k) = \sum_k P(W|L=k)P(L=k) \\
-    P(L=k) & = (1 - \Pr\{\text{space}\})^{k}\Pr\{\text{space}\}\\
-    P(W|L=k) & = \df{w(k) * N}{26^k} \\
-    P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^k} (1 - \Pr\{\text{space}\})^{k}\Pr\{\text{space}\}\right)
+    P(L=k) & = (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}\\
+    P(W|L=k) & = \df{w(k) * N}{26^{k-1}\times 1} \\
+    P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}\right)
   \end{align*}
   So,
   \begin{itemize}
     \item If letters are chosen uniformly,
-      $$P(W) = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^k} \left(\df{26}{27}\right)^{k}\df{1}{27}\right)
-      = \sum_{k=2}^{N} \left(\df{w(k) * N}{27^{k+1}} \right)$$
+      $$P(W) = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} \left(\df{26}{27}\right)^{k-1}\df{1}{27}\right)
+      = \sum_{k=2}^{N} \left(\df{w(k) * N}{27^{k}} \right)$$
     \item If letters are chosen according to $p(x)$,
       \begin{align*}
-        P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^k} (1 - p(0))^{k}p(0)\right) \\
-        P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^k}
-               \left(1 - (1-\alpha)\alpha^0\right)^{k}(1-\alpha)\alpha^0\right) \\
-             & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^k} \alpha^{k}(1-\alpha)\right) \\
-             & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^k} p(k)\right)
+        P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} (1 - p(0))^{k-1}p(0)\right) \\
+        P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}}
+               \left(1 - (1-\alpha)\alpha^0\right)^{k-1}(1-\alpha)\alpha^0\right) \\
+             & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} \alpha^{k-1}(1-\alpha)\right) \\
+             & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} p(k-1)\right)
       \end{align*}
   \end{itemize}
   % \url{http://www.languagemonitor.com/number-of-words/number-of-words-in-the-english-language-1008879/}
   According to \url{http://www.languagemonitor.com}, $N \approx 1,025,109$
 
   4 letters non words \url{http://www.appsapps.info/stuff/notwords4.txt}
+  \begin{itemize}
+  \item Number of 1 letter-words = 3\\
+    source: \url{https://en.wiktionary.org/wiki/Category:English_one-letter_words}
+  \item Number of 2 letter-words = 114\\
+    source: \url{https://en.wiktionary.org/wiki/Category:English_two-letter_words}
+  \item Number of 3 letter-words = 172\\
+    source: \url{https://en.wiktionary.org/wiki/Category:English_three-letter_words}
+  % \item Number of 4 letter not-words = 2745\\
+  %   source: \url{http://www.appsapps.info/stuff/notwords4.txt}
+  \end{itemize}
 
 \item What is the probability of randomly generating $W$ words in a row under each distribution?
 \item How many times must we randomly sample before getting $W$ words in a row under each distribution?
