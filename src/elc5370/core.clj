@@ -91,8 +91,8 @@
 
 (defn plot-beta-binomial
   [ch alpha beta & {:keys [color]}]
-  (let [b-b-data (beta-binomial (vec (range 27))
-                                :n 26 :alpha alpha :beta beta)
+  (let [beta-binomial (new-beta-binomial-fn 26 alpha beta)
+        b-b-data (beta-binomial (vec (range 27)))
         label    "Beta-Binomail Fit"]
     (remove-series ch label)
     (charts/add-lines ch (vec (range 27)) b-b-data :series-label label)
@@ -162,6 +162,11 @@
     ;; (println den)
     (/ s B))
 
-(def beta-binomial2 (new-beta-binomial-fn 26 0.68 2.7))
+(def beta-binomial (new-beta-binomial-fn 26 0.68 2.7))
 (let [x (vec (range  -3 3 0.001)) ]
   (incanter/view (charts/xy-plot x (map f x) :series-label "beta binomial f plot")))
+
+(defn q
+  [x]
+  (let [a 0.8395]
+    (* (- 1 a) (Math/pow a x))))

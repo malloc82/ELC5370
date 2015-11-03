@@ -116,7 +116,7 @@ The average word in English is $\lambda =5.1$ letters.
       \alpha & = \df{\sum_{x=0}^{26} C_xB_xx}{\sum_{x=0}^{26} C_xB_x (x + 1)}
                = \df{\sum_{x=0}^{26} \dbinom{n}{x}B(x+\alpha, n-x+\beta) x}
                     {\sum_{x=0}^{26} \dbinom{n}{x}B(x+\alpha, n-x+\beta) (x + 1)} \\
-      \shortintertext{with $n=26, \alpha-0.68, \beta=2.7$}
+      \shortintertext{with $n=26, \alpha=0.68, \beta=2.7$}
       \alpha & \approx 0.8395
     \end{align*}
 
@@ -233,7 +233,30 @@ The average word in English is $\lambda =5.1$ letters.
 
   \item What is the average word length in English based on $q(x)$? On $p(x)$? \\
     \textbf{Solution:} \\
-     
+     Ideally,
+     \begin{align*}
+       \text{average word length} & = \df{\text{total length (or non-space characters count)}}
+                                         {\text{number of words (or spaces)}}
+                                    = \df{\text{182303}}{\text{40000}}
+                                    \approx 4.56
+     \end{align*}
+     However, average length based on a distribution $f(x)$, in general, should be
+     \begin{align*}
+       \text{average word length} & = \df{\sum_{x=1}^{26} f(x)}{f(x=0)}
+     \end{align*}
+     So, for $q(x)$, we have:
+     \begin{align*}
+       \text{average word length} & = \df{\sum_{x=1}^{26} q(x)}{q(0)} \approx \df{0.8066}{0.1935} \approx 4.17 \\
+       \shortintertext{where}
+       q(x) & = \dbinom{n}{x} \df{B(x+\alpha, n-x+\beta)}{B(\alpha, \beta)}
+              \quad \text{with $n = 26, \alpha = 0.68, \beta = 2.7$}
+     \end{align*}
+     For $p(x)$, we have:
+     \begin{align*}
+       \text{average word length} & = \df{\sum_{x=1}^{26} p(x)}{p(0)} \approx \df{0.8306}{0.1605} \approx 5.18 \\
+       \shortintertext{where}
+       p(x) & = (1- \alpha)\alpha^x \quad \text{with $\alpha$ = 0.8395}
+     \end{align*}
   \end{enumerate}
 \end{enumerate}
 
