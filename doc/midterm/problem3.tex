@@ -222,15 +222,18 @@ The average word in English is $\lambda =5.1$ letters.
       & \quad + 12a^2 - 12a + 2 + \df{4C_1B_1}{B} + 2
     \end{align*}
     we can numerically find the global minimum(s) with Newton's
-    method\footnote{\url{https://en.wikipedia.org/wiki/Newton\%27s_method}}. Code used for newton's method is shown
-    in listing
+    method\footnote{\url{https://en.wikipedia.org/wiki/Newton\%27s_method}} which gives me $\alpha \approx 0.83495$.
+    Code used for newton's method is shown
+    in listing (\ref{lst:newton}) and (\ref{lst:binomial})
     \SourceCode{clojure}{Functions for using newton's method}{lst:newton}{../../src/elc5370/optimization.clj}
-    \SourceCode{clojure}{Functions for beta binomial distribution}{lst:newton}{../../src/elc5370/binomial.clj}
+    \SourceCode{clojure}{Functions for beta binomial distribution}{lst:binomial}{../../src/elc5370/binomial.clj}
     % \begin{align*}
     %   & = (a - 1)^2\sum_{x=0}^{26} 2xa^{2x-1} + \df{1}{B}\sum_{x=0}^{26} \left(2C_xB_x(x+1)a^{x} - 2C_xB_xxa^{x-1}\right)
     % \end{align*}
 
-  \item What is the average word length in English based on $q(x)$? On $p(x)$?
+  \item What is the average word length in English based on $q(x)$? On $p(x)$? \\
+    \textbf{Solution:} \\
+     
   \end{enumerate}
 \end{enumerate}
 
