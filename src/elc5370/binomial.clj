@@ -4,25 +4,25 @@
 
 (def comb-cache
   (let [cache (atom {})]
-    (fn ! ([^Long n ^Long k]
+    (fn ! ([^BigInteger n ^BigInteger k]
           (or (@cache [n k])
               (cond
-                (or (= n k) (= k 0)) 1
-                (or (= k 1) (= k (dec n))) n
-                :else (let [v ^Long (+ (! (unchecked-dec n) (unchecked-dec k))
-                                       (! (unchecked-dec n) k))]
+                (or (= n k) (= k 0)) (bigint 1)
+                (or (= k 1) (= k (dec n))) (bigint n)
+                :else (let [v ^BigInteger (+ (! (unchecked-dec n) (unchecked-dec k))
+                                             (! (unchecked-dec n) k))]
                         (swap! cache assoc [n k] v)
                         v))))
       ([] @cache))))
 
 (def comb-mem
   (memoize
-   (fn [n k]
+   (fn [^BigInteger n ^BigInteger k]
      (cond
-       (or (= n k) (= k 0)) 1
-       (or (= k 1) (= k (dec n))) n
-       (= [n k] [1 0]) 1
-       (= [n k] [1 1]) 1
+       (or (= n k) (= k 0)) (bigint 1)
+       (or (= k 1) (= k (dec n))) (bigint n)
+       (= [n k] [1 0]) (bigint 1)
+       (= [n k] [1 1]) (bigint 1)
        :else (+ (comb-mem (- n 1) (- k 1))
                 (comb-mem (- n 1) k))))))
 
@@ -36,13 +36,14 @@
 (def fact-cache
   (let [cache (atom {})]
     (fn ! ([n]
-          (cond
-            (< n 0) (throw (Exception. (format "Factorial only accept integer greater than 0: n = %d" n)))
-            (<= n 1) 1
-            :else (or (@cache n)
-                      (let [v (* n (! (dec n)))]
-                        (swap! cache assoc n v)
-                        v))))
+          (let [n ^BigInteger (bigint n)]
+           (cond
+             (< n 0) (throw (Exception. (format "Factorial only accept integer greater than 0: n = %d" n)))
+             (<= n 1) (bigint 1)
+             :else (or (@cache n)
+                       (let [v (* n (! (dec n)))]
+                         (swap! cache assoc n v)
+                         v)))))
       ([] @cache))))
 
 
