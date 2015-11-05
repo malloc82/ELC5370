@@ -6,8 +6,13 @@
 
 \textbf{5.} \label{NewToyYoda}
 Continuation from Problem~\ref{SquishyBear}.
-The distribution of English word length, $k$, is a shifted Poisson random variable. At the end of each word, we will add a space to separate words. There are no spaces allowed in the middle of a word. Under this assumption word length follows the distribution
-$$ w(k)=\frac{e^{-\lambda}\lambda^{k-2} }{(k-2)!} ; k=2,3,4,\cdots.$$
+The distribution of English word length, $k$, is a shifted Poisson random variable. At the end of each word, we will add
+a space to separate words. There are no spaces allowed in the middle of a word. Under this assumption word length
+follows the distribution
+\begin{align}
+  w(k)=\frac{e^{-\lambda}\lambda^{k-2} }{(k-2)!} ; k=2,3,4,\cdots \label{eqn:problem5:length}
+\end{align}
+$$ $$
 Assuming there are about a million words in the English language.
 \begin{enumerate}
 \item What is the probability of generating a word in the English language randomly choosing letters
@@ -18,36 +23,35 @@ Assuming there are about a million words in the English language.
   \textbf{Solution:} \\
   \begin{align*}
     \text{Let} \quad & \begin{cases}
-      L & = \text{probability of generating sequence of non-space characters} \\
-      W & = \text{probability of generating an English word} \\
-      N & = \text{total number of English words}
+      K & = \text{probability of generating a sequence of non-space alphabets followed by a space
+      character} \\
+      E & = \text{probability of generating a valid English word} \\
+      N & = \text{total number of English words}, 1000000
     \end{cases}
   \end{align*}
-  \begin{align*}
-    % w(k) & = P(L=k | W) \\
-    P(W) & = \sum_k P(W \cap L_k) = \sum_k P(W|L=k)P(L=k) \\
-    P(L=k) & = (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}\\
-    P(W|L=k) & = \df{w(k) * N}{26^{k-1}\times 1} \\
-    P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}\right)
-  \end{align*}
-  So,
-  \begin{itemize}
-    \item If letters are chosen uniformly,
-      $$P(W) = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} \left(\df{26}{27}\right)^{k-1}\df{1}{27}\right)
-      = \sum_{k=2}^{N} \left(\df{w(k) * N}{27^{k}} \right)$$
-    \item If letters are chosen according to $p(x)$,
-      \begin{align*}
-        P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} (1 - p(0))^{k-1}p(0)\right) \\
-        P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}}
-               \left(1 - (1-\alpha)\alpha^0\right)^{k-1}(1-\alpha)\alpha^0\right) \\
-             & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} \alpha^{k-1}(1-\alpha)\right) \\
-             & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} p(k-1)\right)
-      \end{align*}
-  \end{itemize}
-  % \url{http://www.languagemonitor.com/number-of-words/number-of-words-in-the-english-language-1008879/}
-  According to \url{http://www.languagemonitor.com}, $N \approx 1,025,109$
+  Using conditional probability relation we can express $\Pr\{E\}$ as:
+  $$\Pr\{E\}= \sum_k \Pr\{E \cap K\} = \sum_k \Pr\{E|K=k\}\Pr\{K=k\}$$
+  where
+  $$\Pr\{K=k\} = (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}$$
 
-  4 letters non words \url{http://www.appsapps.info/stuff/notwords4.txt}
+  Since $w(k) * N \approx $ number of English words with length $k$, we can express $\Pr\{E|K=k\}$ as
+  $$\Pr\{E|K=k\} \approx \df{w(k) * N}{26^{k-1}\times 1}$$
+
+  However, when $k=2,3,4$, using (\ref{eqn:problem5:length}) gives us unexpected word counts:
+  \begin{align*}
+    w(2) & = \df{e^{-6.1}6.1^0}{0!} \approx 0.0060967 \\
+    w(2) * 1000000 &  \approx 2242 > 26 \\
+    w(3) & = \df{e^{-6.1}6.1^1}{1!} \approx 0.013681 \\
+    w(3) * 1000000 & \approx 13681 > 26^2 \\
+    w(4) & = \df{e^{-6.1}6.1^2}{2!} \approx 0.041729 \\
+    w(4) * 1000000 & \approx 41728 > 26^3
+  \end{align*}
+  Note that I am using $\lambda = 6.1$ since we are adding an additional space at the end of each word.
+
+
+  For this reason, in order to get a reasonable estimation, I will use some data I found online for $k=2,3,4$ terms. 
+
+  According to Wikipedia,
   \begin{itemize}
   \item Number of 1 letter-words = 3\\
     source: \url{https://en.wiktionary.org/wiki/Category:English_one-letter_words}
@@ -59,8 +63,73 @@ Assuming there are about a million words in the English language.
   %   source: \url{http://www.appsapps.info/stuff/notwords4.txt}
   \end{itemize}
 
-\item What is the probability of randomly generating $W$ words in a row under each distribution?
-\item How many times must we randomly sample before getting $W$ words in a row under each distribution?
+  Thus, my estimation for generating a word in English is:
+  \begin{align*}
+    \Pr\{E\} & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}}
+               (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}\right) \\
+    \Pr\{E\} & = \df{3}{26}(1 - \Pr\{\text{space}\})\Pr\{\text{space}\} + \\
+             & \quad \df{114}{26^2}(1 - \Pr\{\text{space}\})^2\Pr\{\text{space}\} + \\
+             & \quad \df{172}{26^3}(1 - \Pr\{\text{space}\})^3\Pr\{\text{space}\} + \\
+             & \quad \sum_{k=5}^{N} \left(\df{w(k) * N}{26^{k-1}}
+               (1 - \Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}\right)
+  \end{align*}
+  % For $\Pr\{E|K=k\}$, it's the probability of English word when given a sequence of non-space alphabets
+  % followed by a space. So it can be computed with number of English words in a given length divided by
+  % all the possible combination of non-space alphabets in that given length. Since we know the total
+  % number of English words and the
+  So,
+  \begin{itemize}
+    \item If letters are chosen uniformly,
+      \begin{align*}
+        \Pr\{\text{space}\}
+        & = \df{1}{27} \\
+        \Pr\{E\}
+        & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}}\left( \df{26}{27} \right)^{k-1}\df{1}{27}\right) \\
+        & = \sum_{k=2}^{N} \left(\df{w(k) * N}{27^{k}} \right) \\
+        & = \df{3}{27^2} + \df{114}{27^3} + \df{172}{27^4} +
+          \sum_{k=5}^{N} \left(\df{w(k) * N}{27^{k}} \right) \\
+        & \approx 0.01649 \numberthis \label{result:prob5:1}
+      \end{align*}
+    \item If letters are chosen according to $p(x)$,
+      \begin{align*}
+        \Pr\{\text{space}\}
+        & = \df{40000}{222303} \approx 0.17993 \\
+        \Pr\{E\} & = \df{3}{26} \df{182303}{222303} \df{40000}{222303} +
+                   \df{114}{26^2} \left(\df{182303}{222303}\right)^2 \df{40000}{222303} +
+                   \df{172}{26^3} \left(\df{182303}{222303}\right)^3 \df{40000}{222303} + \\
+        & \quad \sum_{x=5}^{N} \left( \df{w(k) * N}{26^{k-1}}
+          \left(\df{182303}{222303}\right)^{k-1} \df{40000}{222303} \right) \\
+        & \approx 0.054269 \numberthis \label{result:prob5:2}
+      \end{align*}
+
+      \CodeSnippet{clojure}
+      {Code used to compute the probability in (\ref{result:prob5:1}) and (\ref{result:prob5:2})}
+      {lst:prob5:1}
+      {../../src/elc5370/problem5.clj}{44}{68}
+
+      % \begin{align*}
+      %   P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} (1 - p(0))^{k-1}p(0)\right) \\
+      %   P(W) & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}}
+      %          \left(1 - (1-\alpha)\alpha^0\right)^{k-1}(1-\alpha)\alpha^0\right) \\
+      %        & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} \alpha^{k-1}(1-\alpha)\right) \\
+      %        & = \sum_{k=2}^{N} \left(\df{w(k) * N}{26^{k-1}} p(k-1)\right)
+      % \end{align*}
+  \end{itemize}
+  % % \url{http://www.languagemonitor.com/number-of-words/number-of-words-in-the-english-language-1008879/}
+  % According to \url{http://www.languagemonitor.com}, $N \approx 1,025,109$
+
+  % 4 letters non words \url{http://www.appsapps.info/stuff/notwords4.txt}
+
+\item What is the probability of randomly generating $W$ words in a row under each distribution?\\
+  \textbf{Solution:}\\
+  \begin{itemize}
+  \item If letters are chosen uniformly: $0.01649^W$
+  \item If letters are chosen according to $p(x)$: $0.054269^W$
+  \end{itemize}
+\item How many times must we randomly sample before getting $W$ words in a row under each distribution?\\
+  \textbf{Solution:}\\
+  There is no guarantee that we can successfully choosing $W$ words randomly with any number 
+  
 \item If a word is $w_k$ characters long (including a space at the end), assume it requires $k \log_2 N$ bits to form. How many bits do we use, on average, to query to the point we have $W$ words in a row?
 \end{enumerate}
 
