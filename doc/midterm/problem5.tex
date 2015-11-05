@@ -49,7 +49,7 @@ Assuming there are about a million words in the English language.
   Note that I am using $\lambda = 6.1$ since we are adding an additional space at the end of each word.
 
 
-  For this reason, in order to get a reasonable estimation, I will use some data I found online for $k=2,3,4$ terms. 
+  For this reason, in order to get a reasonable estimation, I will use some data I found online for $k=2,3,4$ terms.
 
   According to Wikipedia,
   \begin{itemize}
@@ -126,13 +126,47 @@ Assuming there are about a million words in the English language.
   \item If letters are chosen uniformly: $0.01649^W$
   \item If letters are chosen according to $p(x)$: $0.054269^W$
   \end{itemize}
-\item How many times must we randomly sample before getting $W$ words in a row under each distribution?\\
-  \textbf{Solution:}\\
-  There is no guarantee that we can successfully choosing $W$ words randomly with any number 
-  
-\item If a word is $w_k$ characters long (including a space at the end), assume it requires $k \log_2 N$ bits to form. How many bits do we use, on average, to query to the point we have $W$ words in a row?
+
+\item How many times must we randomly sample before getting $W$ words in a row under each distribution? \\
+  \textbf{Solution:} \\
+  Given a event's probability of occurrence is $p$, the expected number of trial to the first success should be
+  $\df{1}{p}$. Thus
+  \begin{itemize}
+    \item Uniform distribution: we need $\ceil{0.01649^{-W}}$ number of trials.
+    \item For $p(x)$, we need $\ceil{0.054269^{-W}}$ number of trials.
+  \end{itemize}
+  % According to AEP,
+  % \begin{align*}
+  %   H(E) & \approx - \df{1}{W}\log p(E_1, E_2, E_3, \cdots, E_W) \\
+  %        & = - \df{1}{W} \log 0.01649^W = - \log 0.01649\\
+  % \end{align*}
+  % We probably need to sample $2^{WH}$ times which gives us $2^{-W\log 0.01649} = \left(\df{1}{0.01649}\right)^W$ which
+  % is for uniform distribution. For distribution using $p(x)$, we would need $\ceil{\left(\df{1}{0.054269}\right)^W}$
+
+\item If a word is $w_k$ characters long (including a space at the end), assume it requires $k \log_2 N$ bits to form.
+  How many bits do we use, on average, to query to the point we have $W$ words in a row? \\
+  \textbf{Solution:} \\
+  Number of bits require to encode a sequence is $W \cdot H(E)$
+
+  Average length of random word can be calculated by:
+  \begin{align*}
+    \sum_{k=2}^{\infty} k(1-\Pr\{\text{space}\})^{k-1}\Pr\{\text{space}\}
+  \end{align*}
+  For both cases, they are computed numerically using code shown in (\ref{lst:prob5:4})
+  \CodeSnippet{clojure}
+  {Code used to compute expected random word length}
+  {lst:prob5:4}
+  {../../src/elc5370/problem5.clj}{75}{82}
+
+  Computed results are:
+  \begin{itemize}
+    \item Expected random word length using uniform distribution is $26.8433 \approx 27$.
+    \item Expected random word length using $p(x)$ is $5.378 \approx 6$.
+  \end{itemize}
+
+  So for uniform distribution we need $W(27\log_2N)\ceil{0.01649^{-W}}$ bits, and for $p(x)$ we would need
+
+  $W(6\log_2N)\ceil{0.054269^{-W}}$ bits.
 \end{enumerate}
 
 \end{document}
-
-

@@ -36,7 +36,7 @@
 (def data (let [v (sort-by second > table)
                 p (mapv second v)
                 s (double (apply + p))]
-            (println "sum = " s)
+            ;; (println "sum = " s)
             {:letters (mapv first v)
              :index   (range (count v))
              :Pr      (mapv #(/ % s) p)}))
@@ -71,3 +71,12 @@
   (if (coll? x)
     (map #(* (- 1 a) (Math/pow a %)) x)
     (* (- 1 a) (Math/pow a x))))
+
+(defn E_l
+  [p & {:keys [K] :or {K 1000}}]
+  (let [q (- 1 p)]
+    (loop [k 2
+           s 0.0]
+      (if (<= k K)
+        (recur (inc k)  (+ s (* k (Math/pow q (dec k)) p)))
+        s))))
