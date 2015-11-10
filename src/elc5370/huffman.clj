@@ -25,17 +25,15 @@
       (let [one (first s)
             two (second s)
             v   (+ (second one) (second two))
-            t   (list [[one two] v])
             sub-lst (drop 2 s)]
         ;; (println s)
         ;; (println one)
         ;; (println two)
         ;; (println v)
-        ;; (println t)
         ;; (println sub-lst)
         ;; (println "=====================================")
         (recur (concat (filter #(< (second %) v) sub-lst)
-                       t
+                       `(~[[one two] v])
                        (filter #(>= (second %) v) sub-lst))
                (dec len)))
       (first s))))
@@ -46,11 +44,13 @@
             ;; (println t s)
             (if (coll? (first t))
               (let [_m (f (first  (first t)) (str/join [s "0"]) m!)]
-                (f (second (first t)) (str/join [s "1"]) _m))
-              (do
-                (assoc! m! (first t) s))))]
+                (recur (second (first t)) (str/join [s "1"]) _m))
+              (assoc! m! (first t) s)))]
     (persistent! (f tree "" (transient {})))))
 
+(defn huffman-code
+  [s]
+  (gen-code (make-tree (elem-count s))))
 
 ;; Test
-(gen-code (make-tree (elem-count "DAVID CAMERON SETS OUT HIS FOUR EU REFORM GOALS  BUT THE EUROPEAN COMMISSION WARNS HIS BENEFIT RESTRICTIONS MAY BE ILLEGAL.")))
+(huffman-code "DAVID CAMERON SETS OUT HIS FOUR EU REFORM GOALS  BUT THE EUROPEAN COMMISSION WARNS HIS BENEFIT RESTRICTIONS MAY BE ILLEGAL.")
