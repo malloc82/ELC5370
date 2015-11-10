@@ -22,9 +22,8 @@
   (loop [s   lst
          len (count lst)]
     (if (> len 1)
-      (let [one (first s)
-            two (second s)
-            v   (+ (second one) (second two))
+      (let [t (take 2 s)
+            v (apply + (map second t))
             sub-lst (drop 2 s)]
         ;; (println s)
         ;; (println one)
@@ -33,7 +32,7 @@
         ;; (println sub-lst)
         ;; (println "=====================================")
         (recur (concat (filter #(< (second %) v) sub-lst)
-                       `(~[[one two] v])
+                       `(~[t v])
                        (filter #(>= (second %) v) sub-lst))
                (dec len)))
       (first s))))
