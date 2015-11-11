@@ -22,7 +22,9 @@
     [(str/join ["_dummy" (.toString i) "_"]) (int 0)]))
 
 (defn padding
-  "Calculate number of merges, and number of padding to sorted symbol table"
+  "Calculate number of merges, and number of padding to sorted symbol table.
+   Total, there should be 1 + k(D - 1) symbols, so we need to calculate
+   the number of dummies to pad."
   [n D]
   (let [k (long (Math/ceil (/ (dec n) (dec D))))]
     {:merges k :pad (- (inc (* k (dec D))) n)}))
@@ -31,14 +33,12 @@
   [lst & {:keys [D] :or {D 2}}]
   (let [{:keys [merges pad]} (padding (count lst) D)]
     (loop [s (concat (make-dummies pad) lst)
-           k merges]
+           k ^Long merges]
       (if (> k 0)
         (let [[h _s] (split-at D s)
-              v      (apply + (map second h))]
-          (recur (concat (filter #(<  (second %) v) _s)
-                         `(~[h v])
-                         (filter #(>= (second %) v) _s))
-                 (dec k)))
+              v      (apply + (map second h))
+              [s_<= s_>] (split-with #(<= (second %) v) _s)]
+          (recur (concat s_<= `(~[h v]) s_>) (unchecked-dec k)))
         (first s)))))
 
 (defn gen-code
@@ -51,7 +51,7 @@
                   (let [m (loop [n  0
                                  _m m!]
                             (if (< n D-1)
-                              (recur (inc 0) (walk (nth branches n) (str/join [s (nth code n)]) _m))
+                              (recur (inc n) (walk (nth branches n) (str/join [s (nth code n)]) _m))
                               _m))]
                     (recur (last branches) (str/join [s (last code)]) m))
                   (assoc! m! branches s))))]
