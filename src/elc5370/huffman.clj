@@ -43,19 +43,44 @@
 
 (defn gen-code
   [tree & {:keys [code] :or {code ["0" "1"]}}]
-  (let [D-1 (dec (count code))]
+  (let [D (count code)]
     (letfn [(walk [t s m!]
-              ;; (println t s)
               (let [branches (first t)]
                 (if (coll? branches)
-                  (let [m (loop [n  0
-                                 _m m!]
-                            (if (< n D-1)
-                              (recur (inc n) (walk (nth branches n) (str/join [s (nth code n)]) _m))
-                              _m))]
-                    (recur (last branches) (str/join [s (last code)]) m))
+                  (loop [n  0
+                         _m m!]
+                    (if (< n D)
+                      (recur (inc n) (walk (nth branches n) (str/join [s (nth code n)]) _m))
+                      _m))
                   (assoc! m! branches s))))]
       (persistent! (walk tree "" (transient {}))))))
+
+(defn gen-code2
+  "Iterative version of gen-code. Slower"
+  [tree & {:keys [code] :or {code ["0" "1"]}}]
+  (let [D (count code)]
+    (loop [t `(~tree)
+           d `(~D)
+           m (transient {})
+           s '("")]
+      (let [branches (first (first t))
+            i        (first d)]
+        (cond
+          (empty? t) (persistent! m)
+          (= i 0) (recur (pop t) (pop d) m (pop s))
+          (< i D) (let [n (- D i)]
+                    (recur (conj t (nth branches n))
+                           (conj (rest d) (dec i) D)
+                           m
+                           (conj s (nth code n))))
+          (coll? branches) (recur (conj t (first branches))
+                                  (conj (rest d) (dec i) D)
+                                  m
+                                  (conj s (first code)))
+          :else (recur (pop t)
+                       (pop d)
+                       (assoc! m branches (str/join (reverse s)))
+                       (pop s)))))))
 
 (defn huffman-code
   [s & {:keys [code] :or {code ["0" "1"]}}]
@@ -65,4 +90,4 @@
         (gen-code :code code))))
 
 ;; Test
-(huffman-code "DAVID CAMERON SETS OUT HIS FOUR EU REFORM GOALS  BUT THE EUROPEAN COMMISSION WARNS HIS BENEFIT RESTRICTIONS MAY BE ILLEGAL.")
+;; (huffman-code "DAVID CAMERON SETS OUT HIS FOUR EU REFORM GOALS  BUT THE EUROPEAN COMMISSION WARNS HIS BENEFIT RESTRICTIONS MAY BE ILLEGAL.")
