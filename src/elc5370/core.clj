@@ -74,7 +74,7 @@
     (remove-series ch label)
     (charts/add-lines ch (vec (range (count (:Pr data)))) poisson-data :series-label label)
     (when color
-      (let [renderer (get-render-by-label ch label)]
+      (let [renderer ^AbstractRenderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
           (.setSeriesPaint renderer 0 color))))))
 
@@ -85,7 +85,7 @@
     (remove-series ch label)
     (charts/add-lines ch (vec (range (count (:Pr data)))) exp-data :series-label label)
     (when color
-      (let [renderer (get-render-by-label ch label)]
+      (let [renderer ^AbstractRenderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
           (.setSeriesPaint renderer 0 color))))))
 
@@ -97,7 +97,7 @@
     (remove-series ch label)
     (charts/add-lines ch (vec (range 27)) b-b-data :series-label label)
     (when color
-      (let [renderer (get-render-by-label ch label)]
+      (let [renderer ^AbstractRenderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
           (.setSeriesPaint renderer 0 color))))))
 
@@ -125,7 +125,7 @@
     (remove-series ch label)
     (charts/add-lines ch (vec (range 27)) px :series-label label)
     (when color
-      (let [renderer (get-render-by-label ch label)]
+      (let [renderer ^AbstractRenderer (get-render-by-label ch label)]
         (when-not (nil? renderer)
           (.setSeriesPaint renderer 0 color))))))
 
@@ -141,7 +141,7 @@
                           :series-label "Letter Histogram"
                           :legend true :density true))
 (charts/add-points ch (data :index) (data :Pr) :series-label "Raw data")
-(let [renderer (get-render-by-label ch "Raw data")]
+(let [renderer ^AbstractRenderer (get-render-by-label ch "Raw data")]
   (.setSeriesShape renderer 0 (Ellipse2D$Double. -3 -3 6 6)))
 
 (plot-exp ch 6.5 :color Color/RED)

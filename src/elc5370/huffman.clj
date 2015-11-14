@@ -30,6 +30,7 @@
     {:merges k :pad (- (inc (* k (dec D))) n)}))
 
 (defn make-tree
+  "Create a huffman tree given a sorted alphabet list based on frequency."
   [lst & {:keys [D] :or {D 2}}]
   (let [{:keys [merges pad]} (padding (count lst) D)]
     (loop [s (concat (make-dummies pad) lst)
